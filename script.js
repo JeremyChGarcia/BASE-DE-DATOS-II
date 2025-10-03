@@ -84,6 +84,16 @@ class PortfolioManager {
                     tags: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"],
                     date: new Date().toISOString()
                 },
+                 {
+                    id: this.generateId(),
+                    title: "App Móvil de Tareas",
+                    description: "Aplicación móvil para gestión de tareas con sincronización en la nube y notificaciones push.",
+                    category: "mobile",
+                    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop",
+                    url: "https://play.google.com/store/apps/details?id=com.ejemplo.tareas",
+                    tags: ["React Native", "Firebase", "Redux", "Push Notifications"],
+                    date: new Date(Date.now() - 86400000).toISOString()
+                },
                 {
                     id: this.generateId(),
                     title: "App Móvil de Tareas",
