@@ -14,8 +14,8 @@ const pdfsPorSemana = {
         { nombre: 'Ejercicio1.pdf', desc: 'Práctica' }
     ],
     '1-4': [
-        { nombre: 'Flexbox.pdf', desc: 'Layout flexible' },
-        { nombre: 'Ejercicio1.pdf', desc: 'Práctica' }
+        { nombre: 'Informe_Tecnico_Semana_04.pdf', desc: 'Informe Tecnico' }
+      
     ],
     
     // AGREGAS MÁS ASÍ:
