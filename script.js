@@ -10,8 +10,7 @@ const pdfsPorSemana = {
         { nombre: 'MANUAL DE INSTALACION DE SQL SERVER.pdf', desc: 'Práctica' }
     ],
     '1-3': [
-        { nombre: 'Flexbox.pdf', desc: 'Layout flexible' },
-        { nombre: 'Ejercicio1.pdf', desc: 'Práctica' }
+        { nombre: 'ER_semana03.pdf', desc: 'Entidad Relacion' }
     ],
     '1-4': [
         { nombre: 'Informe_Tecnico_Semana_04.pdf', desc: 'Informe Tecnico' }
