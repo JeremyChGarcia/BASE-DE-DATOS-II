@@ -3,7 +3,7 @@ const pdfsPorSemana = {
     '1-1': [
         { nombre: 'MANUAL DE COMO CREAR CUENTA GITHUB.pdf', desc: 'Estructura HTML' },
         { nombre: 'MANUEL DE COMO SUBIR TU PRIMERA PAGINA.pdf', desc: 'Estilos básicos' },
-        { nombre: 'RESUMEN SEMANA 01.pdf', desc: 'Estilos básicos' }
+        { nombre: 'Arquitecturas-de-Bases-de-Datos.pdf', desc: 'Estilos básicos' }
     ],
     '1-2': [
         { nombre: 'diagramas entidad realcion.pdf', desc: 'Layout flexible' },
@@ -13,7 +13,7 @@ const pdfsPorSemana = {
         { nombre: 'ER_semana03.pdf', desc: 'Entidad Relacion' }
     ],
     '1-4': [
-        { nombre: 'Informe_Tecnico_Semana_04.pdf', desc: 'Informe Tecnico' }
+        { nombre: 'Optimizacion-y-Mejora-en-Sistemas-de-Bases-de-Datos111.pdf', desc: 'Informe Tecnico' }
       
     ],
     
