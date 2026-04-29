@@ -6,7 +6,7 @@ const pdfsPorSemana = {
         { nombre: 'Arquitecturas-de-Bases-de-Datos.pdf', desc: 'Estilos básicos' }
     ],
     '1-2': [
-        { nombre: 'diagramas entidad realcion.pdf', desc: 'Layout flexible' },
+        { nombre: 'diagramas entidad realcion.pdf', desc: 'Diagramas' },
         { nombre: 'MANUAL DE INSTALACION DE SQL SERVER.pdf', desc: 'Práctica' }
     ],
     '1-3': [
