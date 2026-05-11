@@ -22,8 +22,8 @@ const pdfsPorSemana = {
     //     { nombre: 'grid.pdf', desc: 'CSS Grid' }
     // ],
     '2-1': [
-        { nombre: 'MANUAL DE COMO CREAR CUENTA GITHUB.pdf', desc: 'Estructura HTML' },
-        { nombre: 'MANUEL DE COMO SUBIR TU PRIMERA PAGINA.pdf', desc: 'Estilos básicos' },
+        { nombre: 'infrografia de sql server cap 1.png', desc: 'Capitulo:01' },
+        { nombre: 'analisis-visual-sql-server_mmr6XwRL.mp4', desc: 'video explicativo del capitulo 01' },
         { nombre: 'RESUMEN SEMANA 01.pdf', desc: 'Estilos básicos' }
     ], 
     '2-2': [
