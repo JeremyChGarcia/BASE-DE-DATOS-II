@@ -22,9 +22,10 @@ const pdfsPorSemana = {
     //     { nombre: 'grid.pdf', desc: 'CSS Grid' }
     // ],
     '2-1': [
-        { nombre: 'infrografia de sql server cap 1.png', desc: 'Capitulo:01' },
-        { nombre: 'analisis-visual-sql-server_mmr6XwRL.mp4', desc: 'video explicativo del capitulo 01' },
-        { nombre: 'RESUMEN SEMANA 01.pdf', desc: 'Estilos básicos' }
+        { nombre: 'Gemini_Generated_Image_8xfvmt8xfvmt8xfv.png', desc: 'Capitulo:01' },
+        { nombre: 'Gemini_Generated_Image_e13xq8e13xq8e13x.png', desc: 'video explicativo del capitulo 01' },
+        { nombre: 'Gemini_Generated_Image_s4f3r4s4f3r4s4f3.png', desc: 'Estilos básicos' },
+        { nombre: 'Infografía SSMS 2022.pdf', desc: 'Estilos básicos' }
     ], 
     '2-2': [
         { nombre: 'Flexbox.pdf', desc: 'Layout flexible' },
