@@ -25,7 +25,7 @@ const pdfsPorSemana = {
         { nombre: 'Gemini_Generated_Image_8xfvmt8xfvmt8xfv.png', desc: 'Capitulo:01' },
         { nombre: 'Gemini_Generated_Image_e13xq8e13xq8e13x.png', desc: 'video explicativo del capitulo 01' },
         { nombre: 'Gemini_Generated_Image_s4f3r4s4f3r4s4f3.png', desc: 'Estilos básicos' },
-        { nombre: 'Infografía SSMS 2022.pdf', desc: 'Estilos básicos' }
+        { nombre: 'Gemini_Generated_Image_z9bp5kz9bp5kz9bp.png', desc: 'Estilos básicos' }
     ], 
     '2-2': [
         { nombre: 'Flexbox.pdf', desc: 'Layout flexible' },
