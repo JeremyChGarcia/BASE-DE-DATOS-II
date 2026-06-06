@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Jeremy Chancasanampa · Portafolio Académico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0e17;
+      background-image: radial-gradient(circle at 15% 30%, rgba(40, 55, 90, 0.4) 1.5px, transparent 1.5px);
+      background-size: 28px 28px;
+      font-family: 'Outfit', sans-serif;
+      color: #eceeff;
+      line-height: 1.45;
+      scroll-behavior: smooth;
+    }
+
+    h1, h2, h3, .unit-title, .badge {
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.3px;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2rem 1.8rem 5rem;
+      position: relative;
+    }
+
+    .hero {
+      margin-bottom: 3.5rem;
+      border-left: 4px solid #ffb347;
+      padding-left: 1.6rem;
+      animation: fadeInUp 0.7s ease-out;
+    }
+
+    .badge {
+      background: rgba(255, 180, 71, 0.12);
+      backdrop-filter: blur(4px);
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #ffcd94;
+      border: 0.5px solid rgba(255, 180, 71, 0.5);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: 2.7rem;
+      font-weight: 660;
+      background: linear-gradient(125deg, #fff, #bfd9ff, #f7b05e);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h2 {
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: #b9c8ff;
+      max-width: 650px;
+    }
+
+    .presentation-card {
+      background: rgba(18, 24, 40, 0.65);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      margin: 2rem 0 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.2rem 2rem 1.2rem 1.8rem;
+      border: 1px solid rgba(255, 170, 80, 0.35);
+      box-shadow: 0 18px 32px -12px rgba(0,0,0,0.4);
+    }
+
+    .foto-perfil {
+      position: relative;
+      width: 85px;
+      height: 85px;
+    }
+
+    .foto-perfil img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 38% 62% 54% 46% / 48% 44% 56% 52%;
+      border: 2px solid #ffb347;
+      box-shadow: 0 10px 18px -6px black;
+      background: #232a44;
+    }
+
+    .edit-icon-photo {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      background: #1e2a44;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #ffb347;
+      border: 1px solid #ffb347;
+      cursor: pointer;
+    }
+
+    .info-presentacion h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .info-presentacion p {
+      color: #baceff;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .unidades-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .unidad-bloque {
+      background: rgba(8, 12, 27, 0.55);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 1.4rem 1.8rem 1.8rem;
+      border: 1px solid rgba(110, 140, 200, 0.3);
+      transition: all 0.25s;
+      box-shadow: 0 12px 20px -10px rgba(0,0,0,0.3);
+    }
+
+    .unidad-bloque:hover {
+      border-color: #ffb34780;
+      background: rgba(14, 22, 45, 0.7);
+    }
+
+    .unidad-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.6rem;
+      border-left: 3px solid #ffb347;
+      padding-left: 1rem;
+    }
+
+    .unidad-icon {
+      font-size: 1.9rem;
+      background: none;
+    }
+
+    .unidad-header h2 {
+      font-size: 1.7rem;
+      font-weight: 620;
+      letter-spacing: -0.2px;
+    }
+
+    .semanas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .semana-card {
+      background: rgba(25, 33, 55, 0.7);
+      border-radius: 1.4rem;
+      padding: 1rem 1.2rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: 1px solid rgba(255, 200, 120, 0.2);
+    }
+
+    .semana-card:hover {
+      background: #1c2547;
+      transform: translateY(-4px);
+      border-color: #ffb347;
+    }
+
+    .semana-num {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      background: #ffb34720;
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 25px;
+      color: #ffcb8a;
+      margin-bottom: 0.6rem;
+    }
+
+    .semana-titulo {
+      font-weight: 650;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .trabajo-nombre {
+      font-size: 0.85rem;
+      color: #ccdcff;
+      margin: 0.5rem 0;
+      font-weight: 400;
+    }
+
+    .archivo-info {
+      margin-top: 0.9rem;
+      border-top: 1px dashed #ffb34760;
+      padding-top: 0.6rem;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge-archivo {
+      background: #2e3a5e;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.65rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .sin-archivo {
+      opacity: 0.6;
+      font-style: italic;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(3, 5, 15, 0.85);
+      backdrop-filter: blur(14px);
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+    }
+
+    .modal-contenido {
+      background: #0f1427e6;
+      border-radius: 2rem;
+      max-width: 500px;
+      width: 88%;
+      padding: 1.8rem;
+      border: 1px solid #ffb347;
+      box-shadow: 0 20px 38px black;
+    }
+
+    .modal-contenido h4 {
+      font-size: 1.8rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-detalle {
+      margin: 1rem 0;
+      line-height: 1.5;
+      color: #e0eaff;
+    }
+
+    .modal-archivo {
+      background: #1b2342;
+      border-radius: 1rem;
+      padding: 0.8rem;
+      margin: 0.8rem 0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .btn-download, .btn-view {
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-weight: bold;
+      font-size: 0.8rem;
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.1s;
+      text-decoration: none;
+    }
+
+    .btn-download {
+      background: #ffb347;
+      color: #101010;
+    }
+
+    .btn-download:hover {
+      background: #ffcc77;
+      transform: scale(1.02);
+    }
+
+    .btn-view {
+      background: #2a3f70;
+      color: white;
+      border: 1px solid #5f8bc9;
+    }
+
+    .btn-view:hover {
+      background: #3f5a9e;
+      transform: scale(1.02);
+    }
+
+    .close-modal {
+      background: none;
+      border: 1px solid #ffb347;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      color: #ffb347;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 0.8rem;
+    }
+
+    /* VISOR MODAL COMPLETO CON NAVEGACIÓN */
+    .visor-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.96);
+      z-index: 2000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .visor-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2002;
+      flex-wrap: wrap;
+      gap: 1rem;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ffb347;
+    }
+
+    .visor-titulo {
+      color: #ffb347;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .visor-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .visor-controls button {
+      background: #2a3f70;
+      border: none;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.1s;
+    }
+
+    .visor-controls button:hover {
+      background: #ffb347;
+      color: #0b0e17;
+    }
+
+    .page-info {
+      color: white;
+      font-size: 0.85rem;
+      background: #1e2a44;
+      padding: 0.3rem 0.8rem;
+      border-radius: 2rem;
+    }
+
+    .cerrar-visorbtn {
+      background: #ff4444 !important;
+    }
+
+    .visor-contenido {
+      margin-top: 70px;
+      width: 90%;
+      height: calc(100% - 100px);
+      background: #1a1f2e;
+      border-radius: 1rem;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .pdf-page {
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      background: white;
+      border-radius: 4px;
+    }
+
+    .visor-contenido canvas {
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .visor-contenido img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      font-size: 0.75rem;
+      border-top: 1px solid rgba(255, 180, 71, 0.25);
+      padding-top: 1.8rem;
+      color: #9aaed3;
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(22px);}
+      100% { opacity: 1; transform: translateY(0);}
+    }
+
+    @media (max-width: 680px) {
+      .container { padding: 1rem; }
+      .hero h1 { font-size: 1.8rem; }
+      .presentation-card { flex-direction: column; text-align: center; padding: 1.5rem; }
+      .unidad-header h2 { font-size: 1.3rem; }
+      .visor-header { flex-direction: column; padding: 0.5rem; }
+      .visor-contenido { margin-top: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <div class="badge"><i class="fas fa-eye"></i> Visualización completa de PDF · todas las páginas</div>
+    <h1>📘 Portafolio <br>Académico Semanal</h1>
+    <h2>Desarrollo continuo · mis prácticas, proyectos y entregas</h2>
+  </div>
+
+  <div class="presentation-card">
+    <div class="foto-perfil" id="fotoContainer">
+      <img id="fotoPerfilImg" src="foto-perfil.jpeg" alt="Foto de Jeremy">
+      <div class="edit-icon-photo" id="cambiarFotoBtn"><i class="fas fa-camera"></i></div>
+      <input type="file" id="inputFoto" accept="image/*" style="display: none;">
+    </div>
+    <div class="info-presentacion">
+      <h3>Jeremy Joel Chancasanampa Garcia</h3>
+      <p><i class="fas fa-microchip"></i> Estudiante de Ingeniería  ·  <i class="fas fa-folder-open"></i> 4 Unidades · 16 semanas</p>
+      <p><i class="fas fa-github"></i> Archivos alojados en el repositorio · Visor con todas las páginas</p>
+    </div>
+  </div>
+
+  <div class="unidades-wrapper" id="unidadesDinamicas"></div>
+
+  <footer>
+    <i class="fab fa-github"></i> Los trabajos están dentro del repositorio en la carpeta /trabajos/<br>
+    ✍️ Jeremy Joel Chancasanampa Garcia · Visor de PDF con navegación por páginas
+  </footer>
+</div>
+
+<!-- Modal de detalles -->
+<div id="modalTrabajo" class="modal-overlay">
+  <div class="modal-contenido">
+    <h4 id="modalSemanaTitulo">Semana</h4>
+    <div id="modalDescripcion" class="modal-detalle"></div>
+    <div id="modalArchivoZona" class="modal-archivo"></div>
+    <button class="close-modal" id="cerrarModalBtn"><i class="fas fa-times"></i> Cerrar</button>
+  </div>
+</div>
+
+<!-- VISOR COMPLETO CON NAVEGACIÓN -->
+<div id="visorModal" class="visor-modal">
+  <div class="visor-header">
+    <div class="visor-titulo" id="visorTitulo">Visualizando documento</div>
+    <div class="visor-controls">
+      <button id="visorPrevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
+      <span class="page-info" id="pageInfo">Página 1 / 1</span>
+      <button id="visorNextBtn">Siguiente <i class="fas fa-chevron-right"></i></button>
+      <button id="visorZoomIn"><i class="fas fa-search-plus"></i></button>
+      <button id="visorZoomOut"><i class="fas fa-search-minus"></i></button>
+      <button id="cerrarVisorBtn" class="cerrar-visorbtn"><i class="fas fa-times"></i> Cerrar</button>
+    </div>
+  </div>
+  <div class="visor-contenido" id="visorContenido">
+    <!-- Aquí se renderizarán las páginas -->
+  </div>
+</div>
+
+<script>
+  // Configurar PDF.js worker
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+  // DATOS DE UNIDADES (mismos de antes)
+  const unidades = [
+    { id: 1, nombre: "Unidad 1 · Introducción a la arquitectura de base de datos", icono: "fas fa-brain", semanas: [
+      
+      { num: 1, titulo: "Introducción a la arquitectura de base de datos-Semana 1", trabajo: "MANUAL DE COMO SUBIR TU PRIMERA PAGINA", descripcion: "En el sigueinte pdf encontraremos los pasos necesarios para que una persona pueda subir su primera página.", archivo: "trabajos/unidad1/semana1_MANUAL DE COMO SUBIR TU PRIMERA PAGINA.pdf" },
+      { num: 1, titulo: "Introducción a la arquitectura de base de datos-Semana 1", trabajo: "MANUAL DE COMO CREAR CUENTA GITHUB", descripcion: "En el siguiente pdf encontraremos los pasos necesarios para crear una cuenta en GitHub.", archivo: "trabajos/unidad1/semana1_MANUAL DE COMO CREAR CUENTA GITHUB.pdf" },
+      { num: 1, titulo: "Introducción a la arquitectura de base de datos-Semana 1", trabajo: "Arquitecturas de Bases de Datos", descripcion: "Introducción a las arquitecturas de bases de datos.", archivo: "trabajos/unidad1/semana1_Arquitecturas-de-Bases-de-Datos.pdf" },
+
+      { num: 2, titulo: "Gestores de Bases de Datos-Semana 2", trabajo: "Diagramas entidad-relación", descripcion: "En el siguiente pdf encontraremos los pasos necesarios para crear diagramas entidad-relación.", archivo: "trabajos/unidad1/semana2_diagramas entidad realcion.pdf" },
+      { num: 2, titulo: "Gestores de Bases de Datos-Semana 2", trabajo: "Manual de instalación de SQL Server", descripcion: "En el siguiente pdf encontraremos los pasos necesarios para instalar SQL Server.", archivo: "trabajos/unidad1/semana2_MANUAL DE INSTALACION DE SQL SERVER.pdf" },
+      
+      { num: 3, titulo: "Arquitecturas de Bases de Datos-Semana 3", trabajo: "Programa ER estudio", descripcion: "En el sigueinte pdf veremos como aplicamos entidad relacion en ER estudio.", archivo: "trabajos/unidad1/semana3_ER.pdf" },
+
+      { num: 4, titulo: "Diseño y arquitectura de bases de datos-Semana 4", trabajo: "Optimización y mejora en sistemas de bases de datos", descripcion: "En el siguiente pdf encontraremos los pasos necesarios para optimizar y mejorar los sistemas de bases de datos.", archivo: "trabajos/unidad1/semana4_Optimizacion-y-Mejora-en-Sistemas-de-Bases-de-Datos.pdf" }
+    ]},
+
+    { id: 2, nombre: "Unidad 2 · Desarrollo frontend creativo", icono: "fas fa-laptop-code", semanas: [
+      { num: 1, titulo: "Semana 1", trabajo: "¿Qué es SQL Server?", descripcion: "en la siguiente imagen encontraremos un resumen necesarios para entender qué es SQL Server.", archivo: "trabajos/unidad2/semana1_que es sql server.png" },
+      { num: 1, titulo: "Semana 1", trabajo: "Ediciones de SQL Server", descripcion: "en la siguiente imagen encontraremos las diferentes ediciones de SQL Server.", archivo: "trabajos/unidad2/semana1_ediciones de sql server.png" },
+      { num: 1, titulo: "Semana 1", trabajo: "Tecnologías de SQL Server", descripcion: "En la siguiente imagen encontraremos las tecnologías de SQL Server.", archivo: "trabajos/unidad2/semana1_tecnologias de sql server.png" },
+      { num: 1, titulo: "Semana 1", trabajo: "Guía visual de SQL Server Management Studio", descripcion: "En la siguiente imagen encontraremos una guía visual de SQL Server Management Studio.", archivo: "trabajos/unidad2/semana1_guia visual de sql server management studio.png" },
+      
+      { num: 2, titulo: "Semana 2", trabajo: "CSS Grid & Flex", descripcion: "Landing page responsiva.", archivo: "trabajos/unidad2/semana2_css_avanzado.pdf" },
+      { num: 3, titulo: "Semana 3", trabajo: "JavaScript eventos", descripcion: "Mini juego interactivo.", archivo: "trabajos/unidad2/semana3_juego_js.pdf" },
+      { num: 4, titulo: "Semana 4", trabajo: "Portafolio interactivo", descripcion: "Portafolio digital.", archivo: "trabajos/unidad2/semana4_portafolio.pdf" }
+    ]},
+    { id: 3, nombre: "Unidad 3 · Gestión de proyectos y UX/UI", icono: "fas fa-chart-simple", semanas: [
+      { num: 1, titulo: "Semana 1", trabajo: "UX Research", descripcion: "Mapa de empatía.", archivo: "trabajos/unidad3/semana1_ux_research.pdf" },
+      { num: 2, titulo: "Semana 2", trabajo: "Diseño en Figma", descripcion: "Prototipo navegable.", archivo: "trabajos/unidad3/semana2_figma.pdf" },
+      { num: 3, titulo: "Semana 3", trabajo: "Test de usabilidad", descripcion: "Informe A/B.", archivo: "trabajos/unidad3/semana3_test_usabilidad.pdf" },
+      { num: 4, titulo: "Semana 4", trabajo: "Rediseño web", descripcion: "Landing page rediseñada.", archivo: "trabajos/unidad3/semana4_rediseno.pdf" }
+    ]},
+    { id: 4, nombre: "Unidad 4 · Innovación y despliegue", icono: "fas fa-cloud-upload-alt", semanas: [
+      { num: 1, titulo: "Semana 1", trabajo: "Git y GitHub", descripcion: "Comandos esenciales.", archivo: "trabajos/unidad4/semana1_git_github.pdf" },
+      { num: 2, titulo: "Semana 2", trabajo: "Despliegue en la nube", descripcion: "Netlify/Vercel.", archivo: "trabajos/unidad4/semana2_despliegue.pdf" },
+      { num: 3, titulo: "Semana 3", trabajo: "Optimización web", descripcion: "Lighthouse.", archivo: "trabajos/unidad4/semana3_optimizacion.pdf" },
+      { num: 4, titulo: "Semana 4", trabajo: "Entrega final", descripcion: "Portafolio completo.", archivo: "trabajos/unidad4/semana4_portafolio_final.pdf" }
+    ]}
+  ];
+
+  // Estado del visor PDF
+  let currentPDFDoc = null;
+  let currentPageNum = 1;
+  let totalPages = 1;
+  let currentScale = 1.2;
+  let currentPDFUrl = '';
+
+  function getFileNameFromPath(path) { return path ? path.split('/').pop() : null; }
+  function getFileIcon(path) {
+    if (!path) return 'fa-file';
+    const ext = path.split('.').pop().toLowerCase();
+    if (ext === 'pdf') return 'fa-file-pdf';
+    if (ext === 'jpg' || ext === 'png') return 'fa-file-image';
+    return 'fa-file-alt';
+  }
+  function isViewable(path) { return path && ['pdf', 'jpg', 'jpeg', 'png'].includes(path.split('.').pop().toLowerCase()); }
+
+  // Renderizar página actual del PDF
+  async function renderCurrentPage() {
+    if (!currentPDFDoc) return;
+    const container = document.getElementById('visorContenido');
+    container.innerHTML = '';
+    
+    try {
+      const page = await currentPDFDoc.getPage(currentPageNum);
+      const viewport = page.getViewport({ scale: currentScale });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      canvas.style.width = 'auto';
+      canvas.style.height = 'auto';
+      canvas.style.maxWidth = '100%';
+      canvas.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+      canvas.style.margin = '0 auto';
+      canvas.style.display = 'block';
+      
+      const context = canvas.getContext('2d');
+      await page.render({ canvasContext: context, viewport: viewport }).promise;
+      container.appendChild(canvas);
+      
+      document.getElementById('pageInfo').innerText = `Página ${currentPageNum} / ${totalPages}`;
+    } catch (err) {
+      console.error('Error renderizando página:', err);
+      container.innerHTML = `<div style="color:white;padding:2rem;">Error al mostrar página ${currentPageNum}</div>`;
+    }
+  }
+
+  async function cargarPDFCompleto(url, nombreArchivo) {
+    currentPDFUrl = url;
+    document.getElementById('visorTitulo').innerHTML = `<i class="fas fa-file-pdf"></i> ${nombreArchivo || 'Documento PDF'}`;
+    const container = document.getElementById('visorContenido');
+    container.innerHTML = '<div style="color:white;padding:2rem;text-align:center;"><i class="fas fa-spinner fa-spin"></i> Cargando documento completo...</div>';
+    
+    try {
+      const loadingTask = pdfjsLib.getDocument(url);
+      currentPDFDoc = await loadingTask.promise;
+      totalPages = currentPDFDoc.numPages;
+      currentPageNum = 1;
+      document.getElementById('pageInfo').innerText = `Página 1 / ${totalPages}`;
+      await renderCurrentPage();
+    } catch (err) {
+      console.error('Error cargando PDF:', err);
+      container.innerHTML = `<div style="color:white;padding:2rem;">Error al cargar el PDF. Verifica la ruta del archivo.</div>`;
+    }
+  }
+
+  function cambiarPagina(delta) {
+    if (!currentPDFDoc) return;
+    let newPage = currentPageNum + delta;
+    if (newPage < 1) newPage = 1;
+    if (newPage > totalPages) newPage = totalPages;
+    if (newPage !== currentPageNum) {
+      currentPageNum = newPage;
+      renderCurrentPage();
+    }
+  }
+  
+  function zoom(delta) {
+    let newScale = currentScale + delta;
+    if (newScale < 0.5) newScale = 0.5;
+    if (newScale > 3) newScale = 3;
+    currentScale = newScale;
+    renderCurrentPage();
+  }
+
+  function abrirVisor(archivoUrl, nombreArchivo) {
+    if (!archivoUrl) return;
+    const ext = archivoUrl.split('.').pop().toLowerCase();
+    const container = document.getElementById('visorContenido');
+    
+    if (ext === 'pdf') {
+      cargarPDFCompleto(archivoUrl, nombreArchivo);
+    } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
+      document.getElementById('visorTitulo').innerHTML = `<i class="fas fa-file-image"></i> ${nombreArchivo}`;
+      container.innerHTML = `<img src="${archivoUrl}" alt="Imagen" style="max-width:100%; max-height:80vh;">`;
+      document.getElementById('pageInfo').innerText = `Imagen · 1 página`;
+    } else {
+      container.innerHTML = `<div style="color:white;padding:2rem;text-align:center;"><i class="fas fa-file-alt"></i> Vista previa no disponible para este tipo de archivo.<br>Puedes descargarlo para visualizarlo.</div>`;
+      document.getElementById('pageInfo').innerText = `Vista no disponible`;
+    }
+    visorModal.style.display = 'flex';
+  }
+
+  function cerrarVisor() {
+    visorModal.style.display = 'none';
+    currentPDFDoc = null;
+    currentPageNum = 1;
+    totalPages = 1;
+    document.getElementById('visorContenido').innerHTML = '';
+  }
+
+  // Renderizar portafolio
+  function renderizarPortafolio() {
+    const contenedor = document.getElementById('unidadesDinamicas');
+    contenedor.innerHTML = '';
+    unidades.forEach(unidad => {
+      const bloque = document.createElement('div');
+      bloque.className = 'unidad-bloque';
+      bloque.innerHTML = `
+        <div class="unidad-header"><div class="unidad-icon"><i class="${unidad.icono}"></i></div><h2>🔹 ${unidad.nombre}</h2></div>
+        <div class="semanas-grid" id="semanasGrid-${unidad.id}"></div>
+      `;
+      const semanasGrid = bloque.querySelector(`.semanas-grid`);
+      unidad.semanas.forEach(semana => {
+        const tieneArchivo = semana.archivo && semana.archivo.trim() !== '';
+        const nombreArchivo = tieneArchivo ? getFileNameFromPath(semana.archivo) : null;
+        const iconoArchivo = tieneArchivo ? getFileIcon(semana.archivo) : 'fa-file';
+        const archivoHtml = tieneArchivo ? `
+          <div class="archivo-info">
+            <span class="badge-archivo"><i class="fas ${iconoArchivo}"></i> ${nombreArchivo}</span>
+            <span style="font-size:0.65rem; color:#aac8ff;"><i class="fas fa-eye"></i> Ver completo</span>
+          </div>
+        ` : `<div class="archivo-info sin-archivo"><span><i class="fas fa-clock"></i> Sin archivo subido</span></div>`;
+        
+        const semanaCard = document.createElement('div');
+        semanaCard.className = 'semana-card';
+        semanaCard.setAttribute('data-unidad', unidad.id);
+        semanaCard.setAttribute('data-semana', semana.num);
+        semanaCard.innerHTML = `
+          <div class="semana-num">📅 Semana ${semana.num}</div>
+          <div class="semana-titulo"><i class="fas fa-file-lines"></i> ${semana.titulo}</div>
+          <div class="trabajo-nombre">📌 ${semana.trabajo}</div>
+          ${archivoHtml}
+        `;
+        semanaCard.addEventListener('click', (e) => {
+          if(e.target.closest('.btn-view') || e.target.closest('.btn-download')) return;
+          abrirModalDetalle(unidad.id, semana, unidad.nombre);
+        });
+        semanasGrid.appendChild(semanaCard);
+      });
+      contenedor.appendChild(bloque);
+    });
+  }
+
+  // Modal de detalles
+  const modalElement = document.getElementById('modalTrabajo');
+  const modalTitulo = document.getElementById('modalSemanaTitulo');
+  const modalDesc = document.getElementById('modalDescripcion');
+  const modalArchivoZona = document.getElementById('modalArchivoZona');
+  const cerrarModal = document.getElementById('cerrarModalBtn');
+
+  function abrirModalDetalle(unidadId, semanaData, unidadNombre) {
+    modalTitulo.innerText = `${unidadNombre} · ${semanaData.titulo}`;
+    modalDesc.innerHTML = `<strong>📄 ${semanaData.trabajo}</strong><br><br>${semanaData.descripcion}`;
+    const tieneArchivo = semanaData.archivo && semanaData.archivo.trim() !== '';
+    const nombreArchivo = tieneArchivo ? getFileNameFromPath(semanaData.archivo) : null;
+    const puedeVer = tieneArchivo && isViewable(semanaData.archivo);
+    
+    if (tieneArchivo) {
+      modalArchivoZona.innerHTML = `
+        <div><span><i class="fas ${getFileIcon(semanaData.archivo)}"></i> <strong>${nombreArchivo}</strong></span></div>
+        <div class="btn-group">
+          ${puedeVer ? `<button class="btn-view" id="btnVerArchivo"><i class="fas fa-eye"></i> Ver todas las páginas</button>` : ''}
+          <a class="btn-download" href="${semanaData.archivo}" download="${nombreArchivo}"><i class="fas fa-download"></i> Descargar</a>
+        </div>
+        <div style="font-size:0.7rem; margin-top: 8px;"><i class="fab fa-github"></i> Archivo en el repositorio</div>
+      `;
+      if (puedeVer) {
+        setTimeout(() => {
+          const btnVer = document.getElementById('btnVerArchivo');
+          if (btnVer) btnVer.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cerrarModalFunc();
+            abrirVisor(semanaData.archivo, nombreArchivo);
+          });
+        }, 10);
+      }
+    } else {
+      modalArchivoZona.innerHTML = `<div style="padding:0.8rem; text-align:center;">📂 Trabajo sin archivo adjunto.</div>`;
+    }
+    modalElement.style.display = 'flex';
+  }
+
+  function cerrarModalFunc() { modalElement.style.display = 'none'; }
+  cerrarModal.addEventListener('click', cerrarModalFunc);
+  modalElement.addEventListener('click', (e) => { if (e.target === modalElement) cerrarModalFunc(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalElement.style.display === 'flex') cerrarModalFunc(); });
+
+  // Eventos del visor
+  document.getElementById('visorPrevBtn').addEventListener('click', () => cambiarPagina(-1));
+  document.getElementById('visorNextBtn').addEventListener('click', () => cambiarPagina(1));
+  document.getElementById('visorZoomIn').addEventListener('click', () => zoom(0.2));
+  document.getElementById('visorZoomOut').addEventListener('click', () => zoom(-0.2));
+  document.getElementById('cerrarVisorBtn').addEventListener('click', cerrarVisor);
+  visorModal.addEventListener('click', (e) => { if(e.target === visorModal) cerrarVisor(); });
+
+  // Foto de perfil
+  const inputFoto = document.getElementById('inputFoto');
+  const fotoImg = document.getElementById('fotoPerfilImg');
+  const cambiarFotoBtn = document.getElementById('cambiarFotoBtn');
+  const fotoGuardada = localStorage.getItem('fotoPerfilBase64_Jeremy');
+  if (fotoGuardada) fotoImg.src = fotoGuardada;
+  cambiarFotoBtn.addEventListener('click', () => inputFoto.click());
+  inputFoto.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const lector = new FileReader();
+      lector.onload = (ev) => { 
+        fotoImg.src = ev.target.result;
+        localStorage.setItem('fotoPerfilBase64_Jeremy', ev.target.result);
+      };
+      lector.readAsDataURL(file);
+    }
+  });
+
+  renderizarPortafolio();
+</script>
+</body>
+</html>
