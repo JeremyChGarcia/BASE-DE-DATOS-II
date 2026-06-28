@@ -447,6 +447,83 @@
       object-fit: contain;
     }
 
+    /* Estilos para el visor HTML - SOLO AGREGADO */
+    .visor-html-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #0b0e17;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .visor-html-container iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      border: none;
+      background: white;
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+    .visor-html-header {
+      background: #1a1f2e;
+      padding: 0.6rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ffb347;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .visor-html-header span {
+      color: #ffb347;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .visor-html-header .html-url {
+      color: #8a9fd4;
+      font-size: 0.7rem;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .btn-html-view {
+      background: #2a3f70;
+      border: none;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: 0.2s;
+    }
+
+    .btn-html-view:hover {
+      background: #ffb347;
+      color: #0b0e17;
+    }
+
+    .html-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      color: #baceff;
+      background: #0f1427;
+      border-radius: 1rem;
+    }
+
+    .html-loading i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #ffb347;
+    }
+
     footer {
       margin-top: 4rem;
       text-align: center;
@@ -468,6 +545,7 @@
       .unidad-header h2 { font-size: 1.3rem; }
       .visor-header { flex-direction: column; padding: 0.5rem; }
       .visor-contenido { margin-top: 100px; }
+      .visor-html-container iframe { min-height: 350px; }
     }
   </style>
 </head>
@@ -564,7 +642,7 @@
       { num: 1, titulo: "Semana 9", trabajo: "SQL sintaxis, esqumas , Funciones, Indices", descripcion: "infografias", archivo: "trabajos/unidad3/SQL.pdf" },
       { num: 2, titulo: "Semana 10", trabajo: "Manual de Azure", descripcion: "Indicaciones para crear una data base en Azure.", archivo: "trabajos/unidad3/manual_azure_semana10.pdf" },
       { num: 2, titulo: "Semana 10", trabajo: "Infografias", descripcion: "Infografias de los 7 temas de la semana 10", archivo: "trabajos/unidad3/Infografias semana 10.pdf" },
-      { num: 2, titulo: "Semana 10", trabajo: "Proyectos semana 10", descripcion: "ejercicios resueltos de la semana 10", archivo: "trabajos/unidad3/Proyectos1-10.html" },
+      { num: 2, titulo: "Semana 10", trabajo: "Proyectos de la semana 10", descripcion: "enunciados resueltos semana 10", archivo: "trabajos/unidad3/Proyectos1-10" },
       { num: 3, titulo: "Semana 11", trabajo: "Test de usabilidad", descripcion: "Informe A/B.", archivo: "trabajos/unidad3/semana3_test_usabilidad.pdf" },
       { num: 4, titulo: "Semana 12", trabajo: "Rediseño web", descripcion: "Landing page rediseñada.", archivo: "trabajos/unidad3/semana4_rediseno.pdf" }
     ]},
@@ -588,10 +666,26 @@
     if (!path) return 'fa-file';
     const ext = path.split('.').pop().toLowerCase();
     if (ext === 'pdf') return 'fa-file-pdf';
-    if (ext === 'jpg' || ext === 'png') return 'fa-file-image';
+    if (ext === 'html' || ext === 'htm') return 'fa-file-code';
+    if (ext === 'jpg' || ext === 'png' || ext === 'jpeg') return 'fa-file-image';
     return 'fa-file-alt';
   }
-  function isViewable(path) { return path && ['pdf', 'jpg', 'jpeg', 'png'].includes(path.split('.').pop().toLowerCase()); }
+  
+  // SOLO AGREGADO: Función para detectar tipo de archivo
+  function getFileType(path) {
+    if (!path) return 'other';
+    const ext = path.split('.').pop().toLowerCase();
+    if (ext === 'pdf') return 'pdf';
+    if (ext === 'html' || ext === 'htm') return 'html';
+    if (ext === 'jpg' || ext === 'png' || ext === 'jpeg') return 'image';
+    return 'other';
+  }
+  
+  function isViewable(path) {
+    if (!path) return false;
+    const ext = path.split('.').pop().toLowerCase();
+    return ['pdf', 'jpg', 'jpeg', 'png', 'html', 'htm'].includes(ext);
+  }
 
   // Renderizar página actual del PDF
   async function renderCurrentPage() {
@@ -642,6 +736,70 @@
     }
   }
 
+  // SOLO AGREGADO: Función para cargar HTML
+  function cargarHTML(url, nombreArchivo) {
+    document.getElementById('visorTitulo').innerHTML = `<i class="fas fa-file-code"></i> ${nombreArchivo || 'Documento HTML'}`;
+    const container = document.getElementById('visorContenido');
+    document.getElementById('pageInfo').innerText = `HTML · Visualización completa`;
+    
+    // Crear un contenedor para el iframe
+    const htmlContainer = document.createElement('div');
+    htmlContainer.className = 'visor-html-container';
+    
+    // Cabecera con información
+    const header = document.createElement('div');
+    header.className = 'visor-html-header';
+    header.innerHTML = `
+      <span><i class="fas fa-code"></i> Visualización HTML</span>
+      <span class="html-url">${url.split('/').pop()}</span>
+      <button class="btn-html-view" onclick="window.open('${url}', '_blank')">
+        <i class="fas fa-external-link-alt"></i> Abrir en nueva pestaña
+      </button>
+    `;
+    
+    // Iframe para mostrar el HTML
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.loading = 'lazy';
+    iframe.onerror = function() {
+      this.style.display = 'none';
+      container.innerHTML = `
+        <div style="color:white;padding:2rem;text-align:center;background:#0f1427;border-radius:1rem;">
+          <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ffb347;margin-bottom:1rem;display:block;"></i>
+          <p>No se pudo cargar el archivo HTML. Puedes descargarlo o abrirlo directamente.</p>
+          <a href="${url}" download style="color:#ffb347;text-decoration:underline;display:inline-block;margin-top:0.5rem;">
+            <i class="fas fa-download"></i> Descargar archivo
+          </a>
+        </div>
+      `;
+    };
+    
+    htmlContainer.appendChild(header);
+    htmlContainer.appendChild(iframe);
+    container.appendChild(htmlContainer);
+    
+    // Mostrar indicador de carga
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'html-loading';
+    loadingDiv.innerHTML = `
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Cargando contenido HTML...</span>
+    `;
+    container.appendChild(loadingDiv);
+    
+    // Remover loading cuando el iframe cargue
+    iframe.onload = function() {
+      const loading = container.querySelector('.html-loading');
+      if (loading) loading.remove();
+    };
+    
+    // Timeout para remover loading después de 5 segundos
+    setTimeout(() => {
+      const loading = container.querySelector('.html-loading');
+      if (loading) loading.remove();
+    }, 5000);
+  }
+
   function cambiarPagina(delta) {
     if (!currentPDFDoc) return;
     let newPage = currentPageNum + delta;
@@ -661,13 +819,19 @@
     renderCurrentPage();
   }
 
+  // SOLO MODIFICADO: Función abrirVisor con soporte para HTML
   function abrirVisor(archivoUrl, nombreArchivo) {
     if (!archivoUrl) return;
     const ext = archivoUrl.split('.').pop().toLowerCase();
     const container = document.getElementById('visorContenido');
     
+    // Limpiar el contenido antes de mostrar nuevo
+    container.innerHTML = '';
+    
     if (ext === 'pdf') {
       cargarPDFCompleto(archivoUrl, nombreArchivo);
+    } else if (ext === 'html' || ext === 'htm') {
+      cargarHTML(archivoUrl, nombreArchivo);
     } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
       document.getElementById('visorTitulo').innerHTML = `<i class="fas fa-file-image"></i> ${nombreArchivo}`;
       container.innerHTML = `<img src="${archivoUrl}" alt="Imagen" style="max-width:100%; max-height:80vh;">`;
@@ -737,32 +901,51 @@
   const modalArchivoZona = document.getElementById('modalArchivoZona');
   const cerrarModal = document.getElementById('cerrarModalBtn');
 
+  // SOLO MODIFICADO: Modal de detalles con soporte para HTML
   function abrirModalDetalle(unidadId, semanaData, unidadNombre) {
     modalTitulo.innerText = `${unidadNombre} · ${semanaData.titulo}`;
     modalDesc.innerHTML = `<strong>📄 ${semanaData.trabajo}</strong><br><br>${semanaData.descripcion}`;
     const tieneArchivo = semanaData.archivo && semanaData.archivo.trim() !== '';
     const nombreArchivo = tieneArchivo ? getFileNameFromPath(semanaData.archivo) : null;
+    const tipoArchivo = tieneArchivo ? getFileType(semanaData.archivo) : 'other';
     const puedeVer = tieneArchivo && isViewable(semanaData.archivo);
+    const esHTML = tipoArchivo === 'html';
     
     if (tieneArchivo) {
+      let botonesHTML = '';
+      
+      if (puedeVer) {
+        if (esHTML) {
+          botonesHTML += `<button class="btn-view" id="btnVerArchivo"><i class="fas fa-eye"></i> Ver HTML</button>`;
+          botonesHTML += `<button class="btn-view" id="btnAbrirNuevaPestania" style="background: #1a2a4a;"><i class="fas fa-external-link-alt"></i> Abrir en nueva pestaña</button>`;
+        } else {
+          botonesHTML += `<button class="btn-view" id="btnVerArchivo"><i class="fas fa-eye"></i> Ver todas las páginas</button>`;
+        }
+      }
+      
       modalArchivoZona.innerHTML = `
         <div><span><i class="fas ${getFileIcon(semanaData.archivo)}"></i> <strong>${nombreArchivo}</strong></span></div>
         <div class="btn-group">
-          ${puedeVer ? `<button class="btn-view" id="btnVerArchivo"><i class="fas fa-eye"></i> Ver todas las páginas</button>` : ''}
+          ${botonesHTML}
           <a class="btn-download" href="${semanaData.archivo}" download="${nombreArchivo}"><i class="fas fa-download"></i> Descargar</a>
         </div>
         <div style="font-size:0.7rem; margin-top: 8px;"><i class="fab fa-github"></i> Archivo en el repositorio</div>
       `;
-      if (puedeVer) {
-        setTimeout(() => {
-          const btnVer = document.getElementById('btnVerArchivo');
-          if (btnVer) btnVer.addEventListener('click', (e) => {
-            e.stopPropagation();
-            cerrarModalFunc();
-            abrirVisor(semanaData.archivo, nombreArchivo);
-          });
-        }, 10);
-      }
+      
+      setTimeout(() => {
+        const btnVer = document.getElementById('btnVerArchivo');
+        if (btnVer) btnVer.addEventListener('click', (e) => {
+          e.stopPropagation();
+          cerrarModalFunc();
+          abrirVisor(semanaData.archivo, nombreArchivo);
+        });
+        
+        const btnAbrir = document.getElementById('btnAbrirNuevaPestania');
+        if (btnAbrir) btnAbrir.addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.open(semanaData.archivo, '_blank');
+        });
+      }, 10);
     } else {
       modalArchivoZona.innerHTML = `<div style="padding:0.8rem; text-align:center;">📂 Trabajo sin archivo adjunto.</div>`;
     }
