@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tema 2 – Proyectos 1 al 5 (unificados)</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ---------- RESET Y ESTILOS BASE ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f0f4f8;
+            color: #1e293b;
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12);
+            padding: 2rem 2.2rem;
+        }
+
+        /* ---------- ENCABEZADO ---------- */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 3px solid #1e4b7a;
+            padding-bottom: 1rem;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .header i {
+            font-size: 2.2rem;
+            color: #1e4b7a;
+            background: #e6f0fa;
+            padding: 0.5rem;
+            border-radius: 14px;
+        }
+
+        .header h1 {
+            font-weight: 700;
+            font-size: 1.9rem;
+            color: #0b2b44;
+        }
+
+        .header .badge {
+            margin-left: auto;
+            background: #1e4b7a;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+        }
+
+        /* ---------- PESTAÑAS ---------- */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.2rem;
+        }
+
+        .tab-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px 30px 0 0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #334155;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn i {
+            font-size: 0.9rem;
+        }
+
+        .tab-btn:hover {
+            background: #dbeafe;
+            color: #0b2b44;
+        }
+
+        .tab-btn.active {
+            background: #1e4b7a;
+            color: white;
+        }
+
+        /* ---------- CONTENIDO DE PESTAÑAS ---------- */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---------- TARJETAS DE SECCIONES (dentro de cada proyecto) ---------- */
+        .section-card {
+            background: #f9fcff;
+            border-radius: 16px;
+            padding: 1.4rem 1.8rem;
+            margin-bottom: 1.8rem;
+            border-left: 6px solid #1e4b7a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0b2b44;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-title i {
+            color: #1e4b7a;
+            font-size: 1.3rem;
+            width: 1.8rem;
+            text-align: center;
+        }
+
+        .highlight-box {
+            background: #eef6fb;
+            padding: 0.8rem 1.4rem;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            border: 1px solid #d4e4f0;
+        }
+
+        .highlight-box ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ---------- BLOQUE DE CÓDIGO ---------- */
+        .code-block {
+            background: #0f1a2c;
+            color: #e3eaf0;
+            border-radius: 14px;
+            padding: 1.4rem 1.8rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            margin: 0.8rem 0 0.2rem 0;
+            box-shadow: inset 0 0 0 1px #2a3a52;
+            position: relative;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 1rem;
+            background: #2a3a52;
+            border: none;
+            color: #b0c8dd;
+            font-size: 0.95rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .code-block .copy-btn:hover {
+            background: #3b5070;
+            color: white;
+        }
+
+        /* Resaltado de sintaxis SQL (básico) */
+        .sql-keyword { color: #ff9f7c; font-weight: 600; }
+        .sql-string { color: #b5d4a8; }
+        .sql-comment { color: #6a8ba0; font-style: italic; }
+        .sql-function { color: #7ec8e3; }
+        .sql-variable { color: #f5c78a; }
+        .sql-number { color: #d4b8d9; }
+        .sql-database { color: #a8d4e6; font-weight: 500; }
+        .sql-table { color: #f0c8a0; font-weight: 500; }
+        .sql-operator { color: #d4b8d9; }
+
+        /* ---------- TABLAS DE JUSTIFICACIÓN ---------- */
+        .justify-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.93rem;
+            margin: 0.6rem 0;
+        }
+
+        .justify-table th {
+            background: #e3edf5;
+            color: #0b2b44;
+            font-weight: 600;
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-bottom: 2px solid #b8cfdf;
+        }
+
+        .justify-table td {
+            padding: 0.5rem 0.8rem;
+            border-bottom: 1px solid #dfeaf2;
+            vertical-align: top;
+        }
+
+        .justify-table .req {
+            font-weight: 600;
+            color: #0f3b5c;
+            white-space: nowrap;
+        }
+
+        /* ---------- LISTA DE BUENAS PRÁCTICAS ---------- */
+        .bp-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.4rem 0 0 0;
+        }
+
+        .bp-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ecf3f8;
+        }
+
+        .bp-list li:last-child {
+            border-bottom: none;
+        }
+
+        .bp-list li i {
+            color: #1e4b7a;
+            font-size: 1rem;
+            margin-top: 0.1rem;
+            min-width: 1.4rem;
+        }
+
+        .bp-list li strong {
+            color: #0b2b44;
+        }
+
+        /* ---------- PIE ---------- */
+        .footer-note {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 2px dashed #d4e2ed;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            color: #3d637f;
+            font-size: 0.9rem;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.8rem;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            .tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .tab-btn {
+                border-radius: 30px;
+                justify-content: center;
+            }
+            .section-card {
+                padding: 1rem 1rem;
+            }
+            .code-block {
+                font-size: 0.75rem;
+                padding: 1rem;
+            }
+            .justify-table {
+                font-size: 0.8rem;
+            }
+            .justify-table th,
+            .justify-table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .tab-btn { display: none; }
+            .tab-content { display: block !important; }
+            .code-block .copy-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!-- ENCABEZADO -->
+        <!-- ============================================================ -->
+        <div class="header">
+            <i class="fas fa-tasks"></i>
+            <h1>Tema 2 · Database Maintenance Plans</h1>
+            <span class="badge">Proyectos 1 – 5 unificados</span>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PESTAÑAS -->
+        <!-- ============================================================ -->
+        <div class="tabs" id="tabHeaders">
+            <button class="tab-btn active" data-tab="proyecto1"><i class="fas fa-database"></i> Proyecto 1</button>
+            <button class="tab-btn" data-tab="proyecto2"><i class="fas fa-layer-group"></i> Proyecto 2</button>
+            <button class="tab-btn" data-tab="proyecto3"><i class="fas fa-robot"></i> Proyecto 3</button>
+            <button class="tab-btn" data-tab="proyecto4"><i class="fas fa-tools"></i> Proyecto 4</button>
+            <button class="tab-btn" data-tab="proyecto5"><i class="fas fa-brain"></i> Proyecto 5</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- CONTENIDO DE PESTAÑAS -->
+        <!-- ============================================================ -->
+
+        <!-- ==================== PROYECTO 1 ==================== -->
+        <div id="proyecto1" class="tab-content active">
+            <!-- 1. Enunciado -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Crear un Plan de Mantenimiento</strong> que realice diariamente el respaldo completo de la base de datos <strong>GradosTítulos</strong>.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check" style="margin-right:0.5rem;color:#1e4b7a;"></i> El script debe incluir:
+                    <ul>
+                        <li><code>BACKUP DATABASE</code></li>
+                        <li>Compresión</li>
+                        <li>Verificación (<code>CHECKSUM</code>)</li>
+                        <li>Programación (diaria)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 2. Script -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-code"></i> 2. Script T‑SQL</div>
+                <div class="code-block" id="code-p1">
+                    <button class="copy-btn" onclick="copyCode('code-p1')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- ========================================================================</span>
+<span class="sql-comment">--  PROYECTO 1 – Backup completo diario de GradosTítulos</span>
+<span class="sql-comment">--  Automatización mediante Trabajo (Job) del Agente SQL</span>
+<span class="sql-comment">-- ========================================================================</span>
+
+<span class="sql-keyword">USE</span> [msdb];
+<span class="sql-keyword">GO</span>
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@jobId</span> <span class="sql-keyword">BINARY</span>(<span class="sql-number">16</span>);
+
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_job</span>
+    <span class="sql-variable">@job_name</span>           = <span class="sql-string">N'BackupDiario_GradosTitulos'</span>,
+    <span class="sql-variable">@enabled</span>            = <span class="sql-number">1</span>,
+    <span class="sql-variable">@description</span>        = <span class="sql-string">N'Backup completo diario de GradosTítulos con compresión y verificación.'</span>,
+    <span class="sql-variable">@start_step_id</span>      = <span class="sql-number">1</span>,
+    <span class="sql-variable">@category_name</span>      = <span class="sql-string">N'[Uncategorized (Local)]'</span>,
+    <span class="sql-variable">@owner_login_name</span>   = <span class="sql-string">N'sa'</span>;
+
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span>
+    <span class="sql-variable">@job_id</span>             = <span class="sql-variable">@jobId</span>,
+    <span class="sql-variable">@step_name</span>          = <span class="sql-string">N'Ejecutar BACKUP completo'</span>,
+    <span class="sql-variable">@step_id</span>            = <span class="sql-number">1</span>,
+    <span class="sql-variable">@cmdexec_success_code</span> = <span class="sql-number">0</span>,
+    <span class="sql-variable">@on_success_action</span>  = <span class="sql-number">1</span>,
+    <span class="sql-variable">@on_fail_action</span>     = <span class="sql-number">2</span>,
+    <span class="sql-variable">@retry_attempts</span>     = <span class="sql-number">3</span>,
+    <span class="sql-variable">@retry_interval</span>     = <span class="sql-number">5</span>,
+    <span class="sql-variable">@database_name</span>      = <span class="sql-string">N'master'</span>,
+    <span class="sql-variable">@command</span>            = <span class="sql-string">N'
+        BACKUP DATABASE [GradosTítulos]
+        TO DISK = N''C:\Backups\GradosTitulos_$(ESCAPE_SQUOTE(SQLINSTANCE))_$(ESCAPE_SQUOTE(DBNAME))_$(ESCAPE_SQUOTE(DATE(yyyyMMdd))).bak''
+        WITH COMPRESSION, CHECKSUM, INIT, STATS = 10;
+    '</span>;
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@scheduleId</span> <span class="sql-keyword">INT</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_schedule</span>
+    <span class="sql-variable">@schedule_name</span>      = <span class="sql-string">N'Programacion_Diaria_23hs'</span>,
+    <span class="sql-variable">@enabled</span>            = <span class="sql-number">1</span>,
+    <span class="sql-variable">@freq_type</span>          = <span class="sql-number">4</span>,
+    <span class="sql-variable">@freq_interval</span>      = <span class="sql-number">1</span>,
+    <span class="sql-variable">@freq_subday_type</span>   = <span class="sql-number">1</span>,
+    <span class="sql-variable">@freq_subday_interval</span> = <span class="sql-number">0</span>,
+    <span class="sql-variable">@freq_relative_interval</span> = <span class="sql-number">0</span>,
+    <span class="sql-variable">@freq_recurrence_factor</span> = <span class="sql-number">0</span>,
+    <span class="sql-variable">@active_start_date</span>  = <span class="sql-number">20260114</span>,
+    <span class="sql-variable">@active_end_date</span>    = <span class="sql-number">99991231</span>,
+    <span class="sql-variable">@active_start_time</span>  = <span class="sql-number">230000</span>,
+    <span class="sql-variable">@active_end_time</span>    = <span class="sql-number">235959</span>,
+    <span class="sql-variable">@schedule_id</span>        = <span class="sql-variable">@scheduleId</span> <span class="sql-keyword">OUTPUT</span>;
+
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_attach_schedule</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@schedule_id</span> = <span class="sql-variable">@scheduleId</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobserver</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@server_name</span> = <span class="sql-string">N'(local)'</span>;
+
+<span class="sql-keyword">PRINT</span> <span class="sql-string">N'Trabajo "BackupDiario_GradosTitulos" creado.'</span>;
+<span class="sql-keyword">GO</span></pre>
+                </div>
+            </div>
+
+            <!-- 3. Justificación -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación técnica</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req"><code>BACKUP DATABASE</code></td><td>Comando nativo</td><td>Estándar confiable para respaldos.</td></tr>
+                    <tr><td class="req">Compresión</td><td><code>WITH COMPRESSION</code></td><td>Reduce tamaño 70‑80%, ahorra espacio y acelera restauración.</td></tr>
+                    <tr><td class="req">Verificación</td><td><code>WITH CHECKSUM</code></td><td>Garantiza integridad del backup.</td></tr>
+                    <tr><td class="req">Programación diaria</td><td><code>sp_add_schedule</code> con <code>freq_type=4</code></td><td>Ejecución automática a las 23:00.</td></tr>
+                </table>
+            </div>
+
+            <!-- 4. Buenas prácticas -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-cogs"></i> <strong>Uso del Agente SQL</strong> en lugar del asistente gráfico (más versionable y depurable).</li>
+                    <li><i class="fas fa-puzzle-piece"></i> <strong>Separación de objetos</strong> (job, step, schedule) para fácil mantenimiento.</li>
+                    <li><i class="fas fa-rotate-left"></i> <strong>Reintentos</strong> (3 intentos, 5 min) para fallos transitorios.</li>
+                    <li><i class="fas fa-folder-tree"></i> <strong>Ruta fija</strong> y nombres dinámicos con fecha.</li>
+                    <li><i class="fas fa-comment"></i> <strong>Script comentado</strong> para facilitar la comprensión.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 2 ==================== -->
+        <div id="proyecto2" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Crear un plan semanal</strong> para reorganizar índices de las tablas <strong>Persona, Tramite, TrabajoInvestigación, Sustentación</strong>.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Debe implementar:
+                    <ul>
+                        <li><code>ALTER INDEX REORGANIZE</code></li>
+                        <li><strong>Job automático</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-code"></i> 2. Script T‑SQL</div>
+                <div class="code-block" id="code-p2">
+                    <button class="copy-btn" onclick="copyCode('code-p2')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- PROYECTO 2 – Reorganización semanal de índices</span>
+<span class="sql-keyword">USE</span> [msdb]; <span class="sql-keyword">GO</span>
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@jobId</span> <span class="sql-keyword">BINARY</span>(<span class="sql-number">16</span>);
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_job</span>
+    <span class="sql-variable">@job_name</span> = <span class="sql-string">N'ReorganizarIndices_Semanal'</span>,
+    <span class="sql-variable">@enabled</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@description</span> = <span class="sql-string">N'Reorganiza índices de Persona, Tramite, TrabajoInvestigación y Sustentación cada domingo.'</span>,
+    <span class="sql-variable">@start_step_id</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@category_name</span> = <span class="sql-string">N'[Uncategorized (Local)]'</span>,
+    <span class="sql-variable">@owner_login_name</span> = <span class="sql-string">N'sa'</span>;
+
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span>
+    <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>,
+    <span class="sql-variable">@step_name</span> = <span class="sql-string">N'Reorganizar índices'</span>,
+    <span class="sql-variable">@step_id</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@cmdexec_success_code</span> = <span class="sql-number">0</span>,
+    <span class="sql-variable">@on_success_action</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@on_fail_action</span> = <span class="sql-number">2</span>,
+    <span class="sql-variable">@retry_attempts</span> = <span class="sql-number">2</span>,
+    <span class="sql-variable">@retry_interval</span> = <span class="sql-number">10</span>,
+    <span class="sql-variable">@database_name</span> = <span class="sql-string">N'GradosTitulos'</span>,
+    <span class="sql-variable">@command</span> = <span class="sql-string">N'
+        ALTER INDEX ALL ON [dbo].[Persona] REORGANIZE;
+        ALTER INDEX ALL ON [dbo].[Tramite] REORGANIZE;
+        ALTER INDEX ALL ON [dbo].[TrabajoInvestigacion] REORGANIZE;
+        ALTER INDEX ALL ON [dbo].[Sustentacion] REORGANIZE;
+        PRINT ''Índices reorganizados.'';
+    '</span>;
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@scheduleId</span> <span class="sql-keyword">INT</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_schedule</span>
+    <span class="sql-variable">@schedule_name</span> = <span class="sql-string">N'Programacion_Semanal_Domingo_02hs'</span>,
+    <span class="sql-variable">@enabled</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@freq_type</span> = <span class="sql-number">8</span>,
+    <span class="sql-variable">@freq_interval</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@freq_subday_type</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@freq_recurrence_factor</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@active_start_date</span> = <span class="sql-number">20260118</span>,
+    <span class="sql-variable">@active_start_time</span> = <span class="sql-number">020000</span>,
+    <span class="sql-variable">@schedule_id</span> = <span class="sql-variable">@scheduleId</span> <span class="sql-keyword">OUTPUT</span>;
+
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_attach_schedule</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@schedule_id</span> = <span class="sql-variable">@scheduleId</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobserver</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@server_name</span> = <span class="sql-string">N'(local)'</span>;
+<span class="sql-keyword">GO</span></pre>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req"><code>ALTER INDEX REORGANIZE</code></td><td>Operación online</td><td>No bloquea tablas, bajo consumo, ideal para fragmentación 5‑30%.</td></tr>
+                    <tr><td class="req">Job automático</td><td><code>sp_add_schedule</code> semanal</td><td>Domingo 02:00 AM, mínimo impacto.</td></tr>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-chart-line"></i> <strong>Monitoreo de fragmentación</strong> (recomendado antes de ejecutar).</li>
+                    <li><i class="fas fa-clock"></i> <strong>Horario de baja actividad</strong> (domingo 02:00).</li>
+                    <li><i class="fas fa-tag"></i> <strong>Nomenclatura clara</strong> del Job y la programación.</li>
+                    <li><i class="fas fa-rotate-left"></i> <strong>Reintentos</strong> configurados para fallos transitorios.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 3 ==================== -->
+        <div id="proyecto3" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Diseñar un plan inteligente</strong> que:</p>
+                <ul>
+                    <li>Reorganice índices menores al 30%</li>
+                    <li>Reconstruya índices mayores al 30%</li>
+                    <li>Actualice estadísticas</li>
+                </ul>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Utilizar:
+                    <ul>
+                        <li><code>sys.dm_db_index_physical_stats</code></li>
+                        <li><code>ALTER INDEX</code></li>
+                        <li><code>UPDATE STATISTICS</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-code"></i> 2. Script T‑SQL</div>
+                <div class="code-block" id="code-p3">
+                    <button class="copy-btn" onclick="copyCode('code-p3')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- PROYECTO 3 – Mantenimiento inteligente de índices</span>
+<span class="sql-keyword">USE</span> [GradosTitulos]; <span class="sql-keyword">GO</span>
+<span class="sql-keyword">SET</span> <span class="sql-variable">NOCOUNT</span> <span class="sql-keyword">ON</span>;
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@TableName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">255</span>), <span class="sql-variable">@IndexName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">255</span>),
+        <span class="sql-variable">@SchemaName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">255</span>), <span class="sql-variable">@Fragmentation</span> <span class="sql-keyword">FLOAT</span>, <span class="sql-variable">@SQL</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-keyword">MAX</span>);
+
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-variable">#IndexStats</span> (
+    <span class="sql-variable">SchemaName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>), <span class="sql-variable">TableName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>),
+    <span class="sql-variable">IndexName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>), <span class="sql-variable">Fragmentation</span> <span class="sql-keyword">FLOAT</span>
+);
+
+<span class="sql-keyword">INSERT INTO</span> <span class="sql-variable">#IndexStats</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-variable">s.name</span>, <span class="sql-variable">o.name</span>, <span class="sql-variable">i.name</span>, <span class="sql-variable">ips.avg_fragmentation_in_percent</span>
+<span class="sql-keyword">FROM</span> <span class="sql-variable">sys.dm_db_index_physical_stats</span>(<span class="sql-variable">DB_ID</span>(), <span class="sql-keyword">NULL</span>, <span class="sql-keyword">NULL</span>, <span class="sql-keyword">NULL</span>, <span class="sql-string">'LIMITED'</span>) <span class="sql-variable">ips</span>
+<span class="sql-keyword">INNER JOIN</span> <span class="sql-variable">sys.objects</span> <span class="sql-variable">o</span> <span class="sql-keyword">ON</span> <span class="sql-variable">ips.object_id</span> = <span class="sql-variable">o.object_id</span>
+<span class="sql-keyword">INNER JOIN</span> <span class="sql-variable">sys.schemas</span> <span class="sql-variable">s</span> <span class="sql-keyword">ON</span> <span class="sql-variable">o.schema_id</span> = <span class="sql-variable">s.schema_id</span>
+<span class="sql-keyword">INNER JOIN</span> <span class="sql-variable">sys.indexes</span> <span class="sql-variable">i</span> <span class="sql-keyword">ON</span> <span class="sql-variable">ips.object_id</span> = <span class="sql-variable">i.object_id</span> <span class="sql-keyword">AND</span> <span class="sql-variable">ips.index_id</span> = <span class="sql-variable">i.index_id</span>
+<span class="sql-keyword">WHERE</span> <span class="sql-variable">o.type</span> = <span class="sql-string">'U'</span> <span class="sql-keyword">AND</span> <span class="sql-variable">o.name</span> <span class="sql-keyword">IN</span> (<span class="sql-string">'Persona'</span>,<span class="sql-string">'Tramite'</span>,<span class="sql-string">'TrabajoInvestigacion'</span>,<span class="sql-string">'Sustentacion'</span>)
+  <span class="sql-keyword">AND</span> <span class="sql-variable">i.index_id</span> <span class="sql-operator">&gt;</span> <span class="sql-number">0</span> <span class="sql-keyword">AND</span> <span class="sql-variable">ips.page_count</span> <span class="sql-operator">&gt;</span> <span class="sql-number">1000</span>;
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">idx_cursor</span> <span class="sql-keyword">CURSOR FAST_FORWARD</span> <span class="sql-keyword">FOR</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-variable">SchemaName</span>, <span class="sql-variable">TableName</span>, <span class="sql-variable">IndexName</span>, <span class="sql-variable">Fragmentation</span> <span class="sql-keyword">FROM</span> <span class="sql-variable">#IndexStats</span> <span class="sql-keyword">WHERE</span> <span class="sql-variable">Fragmentation</span> <span class="sql-operator">&gt;</span> <span class="sql-number">5</span>;
+
+<span class="sql-keyword">OPEN</span> <span class="sql-variable">idx_cursor</span>;
+<span class="sql-keyword">FETCH NEXT</span> <span class="sql-keyword">FROM</span> <span class="sql-variable">idx_cursor</span> <span class="sql-keyword">INTO</span> <span class="sql-variable">@SchemaName</span>, <span class="sql-variable">@TableName</span>, <span class="sql-variable">@IndexName</span>, <span class="sql-variable">@Fragmentation</span>;
+
+<span class="sql-keyword">WHILE</span> <span class="sql-variable">@@FETCH_STATUS</span> = <span class="sql-number">0</span>
+<span class="sql-keyword">BEGIN</span>
+    <span class="sql-keyword">IF</span> <span class="sql-variable">@Fragmentation</span> <span class="sql-operator">&gt;=</span> <span class="sql-number">5</span> <span class="sql-keyword">AND</span> <span class="sql-variable">@Fragmentation</span> <span class="sql-operator">&lt;</span> <span class="sql-number">30</span>
+        <span class="sql-keyword">SET</span> <span class="sql-variable">@SQL</span> = <span class="sql-string">'ALTER INDEX ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@IndexName</span> <span class="sql-operator">+</span> <span class="sql-string">'] ON ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@SchemaName</span> <span class="sql-operator">+</span> <span class="sql-string">'].['</span> <span class="sql-operator">+</span> <span class="sql-variable">@TableName</span> <span class="sql-operator">+</span> <span class="sql-string">'] REORGANIZE;'</span>;
+    <span class="sql-keyword">ELSE IF</span> <span class="sql-variable">@Fragmentation</span> <span class="sql-operator">&gt;=</span> <span class="sql-number">30</span>
+        <span class="sql-keyword">SET</span> <span class="sql-variable">@SQL</span> = <span class="sql-string">'ALTER INDEX ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@IndexName</span> <span class="sql-operator">+</span> <span class="sql-string">'] ON ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@SchemaName</span> <span class="sql-operator">+</span> <span class="sql-string">'].['</span> <span class="sql-operator">+</span> <span class="sql-variable">@TableName</span> <span class="sql-operator">+</span> <span class="sql-string">'] REBUILD WITH (ONLINE = ON);'</span>;
+    <span class="sql-keyword">EXEC</span> <span class="sql-variable">sp_executesql</span> <span class="sql-variable">@SQL</span>;
+    <span class="sql-keyword">PRINT</span> <span class="sql-string">'Acción en '</span> <span class="sql-operator">+</span> <span class="sql-variable">@TableName</span> <span class="sql-operator">+</span> <span class="sql-string">'.'</span> <span class="sql-operator">+</span> <span class="sql-variable">@IndexName</span> <span class="sql-operator">+</span> <span class="sql-string">' (Fragmentación: '</span> <span class="sql-operator">+</span> <span class="sql-keyword">CAST</span>(<span class="sql-variable">@Fragmentation</span> <span class="sql-keyword">AS</span> <span class="sql-keyword">NVARCHAR</span>) <span class="sql-operator">+</span> <span class="sql-string">'%)'</span>;
+    <span class="sql-keyword">FETCH NEXT</span> <span class="sql-keyword">FROM</span> <span class="sql-variable">idx_cursor</span> <span class="sql-keyword">INTO</span> <span class="sql-variable">@SchemaName</span>, <span class="sql-variable">@TableName</span>, <span class="sql-variable">@IndexName</span>, <span class="sql-variable">@Fragmentation</span>;
+<span class="sql-keyword">END</span>
+
+<span class="sql-keyword">CLOSE</span> <span class="sql-variable">idx_cursor</span>; <span class="sql-keyword">DEALLOCATE</span> <span class="sql-variable">idx_cursor</span>;
+
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">Persona</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">Tramite</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">TrabajoInvestigacion</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">Sustentacion</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+
+<span class="sql-keyword">DROP TABLE</span> <span class="sql-variable">#IndexStats</span>;
+<span class="sql-keyword">GO</span></pre>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">DMV</td><td><code>sys.dm_db_index_physical_stats</code> con <code>LIMITED</code></td><td>Rápido y con bajo overhead.</td></tr>
+                    <tr><td class="req">Reorganizar (&lt;30%)</td><td><code>REORGANIZE</code></td><td>Operación online, ligera.</td></tr>
+                    <tr><td class="req">Reconstruir (&gt;30%)</td><td><code>REBUILD WITH (ONLINE=ON)</code></td><td>Elimina fragmentación por completo.</td></tr>
+                    <tr><td class="req">Estadísticas</td><td><code>UPDATE STATISTICS ... FULLSCAN</code></td><td>Precisión máxima para el optimizador.</td></tr>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-chess-queen"></i> <strong>Umbrales estándar</strong> (5% y 30%) según Microsoft.</li>
+                    <li><i class="fas fa-filter"></i> <strong>Filtrado de índices pequeños</strong> (page_count > 1000).</li>
+                    <li><i class="fas fa-bolt"></i> <strong>Modo LIMITED</strong> en DMV para rapidez.</li>
+                    <li><i class="fas fa-comment"></i> <strong>Script documentado</strong> con prints de seguimiento.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 4 ==================== -->
+        <div id="proyecto4" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Automatizar el mantenimiento completo</strong> incluyendo: Backup, CHECKDB, limpieza de historial, reorganización de índices y actualización de estadísticas.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Utilizar <strong>Maintenance Plans</strong> (simulados) y <strong>T‑SQL</strong>.
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-code"></i> 2. Script T‑SQL</div>
+                <div class="code-block" id="code-p4">
+                    <button class="copy-btn" onclick="copyCode('code-p4')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- PROYECTO 4 – Mantenimiento completo (5 pasos)</span>
+<span class="sql-keyword">USE</span> [msdb]; <span class="sql-keyword">GO</span>
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@jobId</span> <span class="sql-keyword">BINARY</span>(<span class="sql-number">16</span>);
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_job</span>
+    <span class="sql-variable">@job_name</span> = <span class="sql-string">N'MantenimientoCompleto_GradosTitulos'</span>,
+    <span class="sql-variable">@enabled</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@description</span> = <span class="sql-string">N'Mantenimiento completo semanal.'</span>,
+    <span class="sql-variable">@start_step_id</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@owner_login_name</span> = <span class="sql-string">N'sa'</span>;
+
+<span class="sql-comment">-- Paso 1: Backup</span>
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@step_name</span> = <span class="sql-string">N'01 - Backup'</span>, <span class="sql-variable">@step_id</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@command</span> = <span class="sql-string">N'BACKUP DATABASE [GradosTitulos] TO DISK = N''C:\Backups\GradosTitulos_Full_$(ESCAPE_SQUOTE(DATE(yyyyMMdd))).bak'' WITH COMPRESSION, CHECKSUM, INIT;'</span>,
+    <span class="sql-variable">@on_success_action</span> = <span class="sql-number">3</span>, <span class="sql-variable">@on_fail_action</span> = <span class="sql-number">2</span>;
+
+<span class="sql-comment">-- Paso 2: CHECKDB</span>
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@step_name</span> = <span class="sql-string">N'02 - CHECKDB'</span>, <span class="sql-variable">@step_id</span> = <span class="sql-number">2</span>,
+    <span class="sql-variable">@database_name</span> = <span class="sql-string">N'GradosTitulos'</span>,
+    <span class="sql-variable">@command</span> = <span class="sql-string">N'DBCC CHECKDB (N''GradosTitulos'') WITH NO_INFOMSGS;'</span>,
+    <span class="sql-variable">@on_success_action</span> = <span class="sql-number">3</span>, <span class="sql-variable">@on_fail_action</span> = <span class="sql-number">2</span>;
+
+<span class="sql-comment">-- Paso 3: Limpieza de historial</span>
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@step_name</span> = <span class="sql-string">N'03 - Limpiar historial'</span>, <span class="sql-variable">@step_id</span> = <span class="sql-number">3</span>,
+    <span class="sql-variable">@database_name</span> = <span class="sql-string">N'msdb'</span>,
+    <span class="sql-variable">@command</span> = <span class="sql-string">N'DELETE FROM msdb.dbo.sysjobhistory WHERE run_date &lt; CONVERT(INT, CONVERT(VARCHAR(8), DATEADD(DAY, -30, GETDATE()), 112));'</span>,
+    <span class="sql-variable">@on_success_action</span> = <span class="sql-number">3</span>, <span class="sql-variable">@on_fail_action</span> = <span class="sql-number">2</span>;
+
+<span class="sql-comment">-- Paso 4: Reorganizar índices</span>
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@step_name</span> = <span class="sql-string">N'04 - Reorganizar índices'</span>, <span class="sql-variable">@step_id</span> = <span class="sql-number">4</span>,
+    <span class="sql-variable">@database_name</span> = <span class="sql-string">N'GradosTitulos'</span>,
+    <span class="sql-variable">@command</span> = <span class="sql-string">N'
+        ALTER INDEX ALL ON [dbo].[Persona] REORGANIZE;
+        ALTER INDEX ALL ON [dbo].[Tramite] REORGANIZE;
+        ALTER INDEX ALL ON [dbo].[TrabajoInvestigacion] REORGANIZE;
+        ALTER INDEX ALL ON [dbo].[Sustentacion] REORGANIZE;'</span>,
+    <span class="sql-variable">@on_success_action</span> = <span class="sql-number">3</span>, <span class="sql-variable">@on_fail_action</span> = <span class="sql-number">2</span>;
+
+<span class="sql-comment">-- Paso 5: Actualizar estadísticas</span>
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobstep</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@step_name</span> = <span class="sql-string">N'05 - Estadísticas'</span>, <span class="sql-variable">@step_id</span> = <span class="sql-number">5</span>,
+    <span class="sql-variable">@database_name</span> = <span class="sql-string">N'GradosTitulos'</span>,
+    <span class="sql-variable">@command</span> = <span class="sql-string">N'EXEC sp_updatestats; UPDATE STATISTICS [dbo].[Persona] WITH FULLSCAN; UPDATE STATISTICS [dbo].[Tramite] WITH FULLSCAN; UPDATE STATISTICS [dbo].[TrabajoInvestigacion] WITH FULLSCAN; UPDATE STATISTICS [dbo].[Sustentacion] WITH FULLSCAN;'</span>,
+    <span class="sql-variable">@on_success_action</span> = <span class="sql-number">1</span>, <span class="sql-variable">@on_fail_action</span> = <span class="sql-number">2</span>;
+
+<span class="sql-comment">-- Programación: domingo 04:00</span>
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@scheduleId</span> <span class="sql-keyword">INT</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_schedule</span> <span class="sql-variable">@schedule_name</span> = <span class="sql-string">N'Programacion_Semanal_Domingo_04hs'</span>,
+    <span class="sql-variable">@freq_type</span> = <span class="sql-number">8</span>, <span class="sql-variable">@freq_interval</span> = <span class="sql-number">1</span>, <span class="sql-variable">@freq_recurrence_factor</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@active_start_time</span> = <span class="sql-number">040000</span>, <span class="sql-variable">@schedule_id</span> = <span class="sql-variable">@scheduleId</span> <span class="sql-keyword">OUTPUT</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_attach_schedule</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@schedule_id</span> = <span class="sql-variable">@scheduleId</span>;
+<span class="sql-keyword">EXEC</span> <span class="sql-database">dbo</span>.<span class="sql-function">sp_add_jobserver</span> <span class="sql-variable">@job_id</span> = <span class="sql-variable">@jobId</span>, <span class="sql-variable">@server_name</span> = <span class="sql-string">N'(local)'</span>;
+<span class="sql-keyword">GO</span></pre>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Tarea</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">Backup</td><td><code>BACKUP ... COMPRESSION, CHECKSUM</code></td><td>Protección y eficiencia.</td></tr>
+                    <tr><td class="req">CHECKDB</td><td><code>DBCC CHECKDB</code></td><td>Verificación de integridad.</td></tr>
+                    <tr><td class="req">Limpieza historial</td><td>Eliminación en <code>sysjobhistory</code></td><td>Control de crecimiento de <code>msdb</code>.</td></tr>
+                    <tr><td class="req">Reorganizar</td><td><code>ALTER INDEX ... REORGANIZE</code></td><td>Mantenimiento online.</td></tr>
+                    <tr><td class="req">Estadísticas</td><td><code>sp_updatestats</code> + <code>FULLSCAN</code></td><td>Optimización de consultas.</td></tr>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-sitemap"></i> <strong>Separación en pasos lógicos</strong> (5 pasos).</li>
+                    <li><i class="fas fa-arrow-right-arrow-left"></i> <strong>Flujo de éxito/fallo</strong> definido.</li>
+                    <li><i class="fas fa-clock"></i> <strong>Horario de bajo uso</strong> (domingo 04:00).</li>
+                    <li><i class="fas fa-shield-halved"></i> <strong>Uso de CHECKSUM y CHECKDB</strong> para integridad.</li>
+                    <li><i class="fas fa-broom"></i> <strong>Limpieza proactiva</strong> del historial.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 5 ==================== -->
+        <div id="proyecto5" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Implementar un plan inteligente</strong> que determine automáticamente qué operaciones ejecutar según el nivel de fragmentación, utilizando:</p>
+                <ul>
+                    <li>Cursores</li>
+                    <li>DMV</li>
+                    <li>ALTER INDEX</li>
+                    <li>UPDATE STATISTICS</li>
+                    <li>Tablas de auditoría</li>
+                </ul>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-code"></i> 2. Script T‑SQL</div>
+                <div class="code-block" id="code-p5">
+                    <button class="copy-btn" onclick="copyCode('code-p5')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- PROYECTO 5 – Plan inteligente con auditoría</span>
+<span class="sql-keyword">USE</span> [GradosTitulos]; <span class="sql-keyword">GO</span>
+<span class="sql-keyword">SET</span> <span class="sql-variable">NOCOUNT</span> <span class="sql-keyword">ON</span>;
+
+<span class="sql-comment">-- 1. Crear tabla de auditoría</span>
+<span class="sql-keyword">IF NOT EXISTS</span> (<span class="sql-keyword">SELECT</span> <span class="sql-number">1</span> <span class="sql-keyword">FROM</span> <span class="sql-variable">sys.tables</span> <span class="sql-keyword">WHERE</span> <span class="sql-variable">name</span> = <span class="sql-string">'IndexMaintenanceAudit'</span>)
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-variable">dbo.IndexMaintenanceAudit</span> (
+    <span class="sql-variable">AuditID</span> <span class="sql-keyword">INT</span> <span class="sql-keyword">IDENTITY</span>(<span class="sql-number">1</span>,<span class="sql-number">1</span>) <span class="sql-keyword">PRIMARY KEY</span>,
+    <span class="sql-variable">ExecutionDate</span> <span class="sql-keyword">DATETIME</span> <span class="sql-keyword">DEFAULT</span> <span class="sql-variable">GETDATE</span>(),
+    <span class="sql-variable">SchemaName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>),
+    <span class="sql-variable">TableName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>),
+    <span class="sql-variable">IndexName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>),
+    <span class="sql-variable">FragmentationPct</span> <span class="sql-keyword">FLOAT</span>,
+    <span class="sql-variable">ActionTaken</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">50</span>),
+    <span class="sql-variable">CommandExecuted</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">1000</span>),
+    <span class="sql-variable">ErrorMessage</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-keyword">MAX</span>),
+    <span class="sql-variable">DurationMs</span> <span class="sql-keyword">INT</span>
+);
+
+<span class="sql-comment">-- 2. Cursor con DMV</span>
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">@SchemaName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>), <span class="sql-variable">@TableName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>),
+        <span class="sql-variable">@IndexName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>), <span class="sql-variable">@Fragmentation</span> <span class="sql-keyword">FLOAT</span>,
+        <span class="sql-variable">@ActionTaken</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">50</span>), <span class="sql-variable">@SQL</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">1000</span>),
+        <span class="sql-variable">@StartTime</span> <span class="sql-keyword">DATETIME</span>, <span class="sql-variable">@DurationMs</span> <span class="sql-keyword">INT</span>, <span class="sql-variable">@ErrorMessage</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-keyword">MAX</span>);
+
+<span class="sql-keyword">DECLARE</span> <span class="sql-variable">idx_cursor</span> <span class="sql-keyword">CURSOR FAST_FORWARD</span> <span class="sql-keyword">FOR</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-variable">s.name</span>, <span class="sql-variable">o.name</span>, <span class="sql-variable">i.name</span>, <span class="sql-variable">ips.avg_fragmentation_in_percent</span>
+<span class="sql-keyword">FROM</span> <span class="sql-variable">sys.dm_db_index_physical_stats</span>(<span class="sql-variable">DB_ID</span>(), <span class="sql-keyword">NULL</span>, <span class="sql-keyword">NULL</span>, <span class="sql-keyword">NULL</span>, <span class="sql-string">'LIMITED'</span>) <span class="sql-variable">ips</span>
+<span class="sql-keyword">INNER JOIN</span> <span class="sql-variable">sys.objects</span> <span class="sql-variable">o</span> <span class="sql-keyword">ON</span> <span class="sql-variable">ips.object_id</span> = <span class="sql-variable">o.object_id</span>
+<span class="sql-keyword">INNER JOIN</span> <span class="sql-variable">sys.schemas</span> <span class="sql-variable">s</span> <span class="sql-keyword">ON</span> <span class="sql-variable">o.schema_id</span> = <span class="sql-variable">s.schema_id</span>
+<span class="sql-keyword">INNER JOIN</span> <span class="sql-variable">sys.indexes</span> <span class="sql-variable">i</span> <span class="sql-keyword">ON</span> <span class="sql-variable">ips.object_id</span> = <span class="sql-variable">i.object_id</span> <span class="sql-keyword">AND</span> <span class="sql-variable">ips.index_id</span> = <span class="sql-variable">i.index_id</span>
+<span class="sql-keyword">WHERE</span> <span class="sql-variable">o.type</span> = <span class="sql-string">'U'</span> <span class="sql-keyword">AND</span> <span class="sql-variable">o.name</span> <span class="sql-keyword">IN</span> (<span class="sql-string">'Persona'</span>,<span class="sql-string">'Tramite'</span>,<span class="sql-string">'TrabajoInvestigacion'</span>,<span class="sql-string">'Sustentacion'</span>)
+  <span class="sql-keyword">AND</span> <span class="sql-variable">i.index_id</span> <span class="sql-operator">&gt;</span> <span class="sql-number">0</span> <span class="sql-keyword">AND</span> <span class="sql-variable">ips.page_count</span> <span class="sql-operator">&gt;</span> <span class="sql-number">500</span> <span class="sql-keyword">AND</span> <span class="sql-variable">ips.avg_fragmentation_in_percent</span> <span class="sql-operator">&gt;</span> <span class="sql-number">5</span>;
+
+<span class="sql-keyword">OPEN</span> <span class="sql-variable">idx_cursor</span>;
+<span class="sql-keyword">FETCH NEXT</span> <span class="sql-keyword">FROM</span> <span class="sql-variable">idx_cursor</span> <span class="sql-keyword">INTO</span> <span class="sql-variable">@SchemaName</span>, <span class="sql-variable">@TableName</span>, <span class="sql-variable">@IndexName</span>, <span class="sql-variable">@Fragmentation</span>;
+
+<span class="sql-keyword">WHILE</span> <span class="sql-variable">@@FETCH_STATUS</span> = <span class="sql-number">0</span>
+<span class="sql-keyword">BEGIN</span>
+    <span class="sql-keyword">SET</span> <span class="sql-variable">@StartTime</span> = <span class="sql-variable">GETDATE</span>();
+    <span class="sql-keyword">SET</span> <span class="sql-variable">@ErrorMessage</span> = <span class="sql-keyword">NULL</span>;
+    <span class="sql-keyword">SET</span> <span class="sql-variable">@ActionTaken</span> = <span class="sql-string">'NO ACTION'</span>;
+
+    <span class="sql-keyword">BEGIN</span> <span class="sql-keyword">TRY</span>
+        <span class="sql-keyword">IF</span> <span class="sql-variable">@Fragmentation</span> <span class="sql-operator">&gt;=</span> <span class="sql-number">5</span> <span class="sql-keyword">AND</span> <span class="sql-variable">@Fragmentation</span> <span class="sql-operator">&lt;</span> <span class="sql-number">30</span>
+        <span class="sql-keyword">BEGIN</span>
+            <span class="sql-keyword">SET</span> <span class="sql-variable">@ActionTaken</span> = <span class="sql-string">'REORGANIZE'</span>;
+            <span class="sql-keyword">SET</span> <span class="sql-variable">@SQL</span> = <span class="sql-string">'ALTER INDEX ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@IndexName</span> <span class="sql-operator">+</span> <span class="sql-string">'] ON ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@SchemaName</span> <span class="sql-operator">+</span> <span class="sql-string">'].['</span> <span class="sql-operator">+</span> <span class="sql-variable">@TableName</span> <span class="sql-operator">+</span> <span class="sql-string">'] REORGANIZE;'</span>;
+        <span class="sql-keyword">END</span>
+        <span class="sql-keyword">ELSE IF</span> <span class="sql-variable">@Fragmentation</span> <span class="sql-operator">&gt;=</span> <span class="sql-number">30</span>
+        <span class="sql-keyword">BEGIN</span>
+            <span class="sql-keyword">SET</span> <span class="sql-variable">@ActionTaken</span> = <span class="sql-string">'REBUILD'</span>;
+            <span class="sql-keyword">SET</span> <span class="sql-variable">@SQL</span> = <span class="sql-string">'ALTER INDEX ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@IndexName</span> <span class="sql-operator">+</span> <span class="sql-string">'] ON ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@SchemaName</span> <span class="sql-operator">+</span> <span class="sql-string">'].['</span> <span class="sql-operator">+</span> <span class="sql-variable">@TableName</span> <span class="sql-operator">+</span> <span class="sql-string">'] REBUILD WITH (ONLINE = ON);'</span>;
+        <span class="sql-keyword">END</span>
+        <span class="sql-keyword">ELSE</span>
+            <span class="sql-keyword">SET</span> <span class="sql-variable">@ActionTaken</span> = <span class="sql-string">'NO ACTION'</span>;
+
+        <span class="sql-keyword">IF</span> <span class="sql-variable">@ActionTaken</span> <span class="sql-operator">&lt;&gt;</span> <span class="sql-string">'NO ACTION'</span>
+            <span class="sql-keyword">EXEC</span> <span class="sql-variable">sp_executesql</span> <span class="sql-variable">@SQL</span>;
+    <span class="sql-keyword">END</span> <span class="sql-keyword">TRY</span>
+    <span class="sql-keyword">BEGIN</span> <span class="sql-keyword">CATCH</span>
+        <span class="sql-keyword">SET</span> <span class="sql-variable">@ErrorMessage</span> = <span class="sql-variable">ERROR_MESSAGE</span>();
+    <span class="sql-keyword">END</span> <span class="sql-keyword">CATCH</span>
+
+    <span class="sql-keyword">SET</span> <span class="sql-variable">@DurationMs</span> = <span class="sql-variable">DATEDIFF</span>(<span class="sql-variable">MILLISECOND</span>, <span class="sql-variable">@StartTime</span>, <span class="sql-variable">GETDATE</span>());
+    <span class="sql-keyword">INSERT INTO</span> <span class="sql-variable">dbo.IndexMaintenanceAudit</span> (<span class="sql-variable">SchemaName</span>, <span class="sql-variable">TableName</span>, <span class="sql-variable">IndexName</span>, <span class="sql-variable">FragmentationPct</span>, <span class="sql-variable">ActionTaken</span>, <span class="sql-variable">CommandExecuted</span>, <span class="sql-variable">ErrorMessage</span>, <span class="sql-variable">DurationMs</span>)
+    <span class="sql-keyword">VALUES</span> (<span class="sql-variable">@SchemaName</span>, <span class="sql-variable">@TableName</span>, <span class="sql-variable">@IndexName</span>, <span class="sql-variable">@Fragmentation</span>, <span class="sql-variable">@ActionTaken</span>, <span class="sql-variable">@SQL</span>, <span class="sql-variable">@ErrorMessage</span>, <span class="sql-variable">@DurationMs</span>);
+
+    <span class="sql-keyword">FETCH NEXT</span> <span class="sql-keyword">FROM</span> <span class="sql-variable">idx_cursor</span> <span class="sql-keyword">INTO</span> <span class="sql-variable">@SchemaName</span>, <span class="sql-variable">@TableName</span>, <span class="sql-variable">@IndexName</span>, <span class="sql-variable">@Fragmentation</span>;
+<span class="sql-keyword">END</span>
+
+<span class="sql-keyword">CLOSE</span> <span class="sql-variable">idx_cursor</span>; <span class="sql-keyword">DEALLOCATE</span> <span class="sql-variable">idx_cursor</span>;
+
+<span class="sql-comment">-- 3. Actualizar estadísticas</span>
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">Persona</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">Tramite</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">TrabajoInvestigacion</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+<span class="sql-keyword">UPDATE STATISTICS</span> [<span class="sql-database">dbo</span>].[<span class="sql-table">Sustentacion</span>] <span class="sql-keyword">WITH</span> <span class="sql-variable">FULLSCAN</span>;
+
+<span class="sql-comment">-- 4. Reporte de auditoría</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-variable">ActionTaken</span>, <span class="sql-variable">COUNT</span>(*) <span class="sql-keyword">AS</span> <span class="sql-variable">Cantidad</span>, <span class="sql-variable">AVG</span>(<span class="sql-variable">FragmentationPct</span>) <span class="sql-keyword">AS</span> <span class="sql-variable">FragmentacionPromedio</span>
+<span class="sql-keyword">FROM</span> <span class="sql-variable">dbo.IndexMaintenanceAudit</span>
+<span class="sql-keyword">WHERE</span> <span class="sql-variable">ExecutionDate</span> <span class="sql-operator">&gt;=</span> <span class="sql-variable">CAST</span>(<span class="sql-variable">GETDATE</span>() <span class="sql-keyword">AS</span> <span class="sql-keyword">DATE</span>)
+<span class="sql-keyword">GROUP BY</span> <span class="sql-variable">ActionTaken</span>;
+<span class="sql-keyword">GO</span></pre>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">Cursores</td><td><code>CURSOR FAST_FORWARD</code></td><td>Procesamiento índice por índice con control granular.</td></tr>
+                    <tr><td class="req">DMV</td><td><code>sys.dm_db_index_physical_stats</code></td><td>Diagnóstico preciso de fragmentación.</td></tr>
+                    <tr><td class="req">ALTER INDEX</td><td><code>REORGANIZE</code> / <code>REBUILD</code></td><td>Acción según umbral.</td></tr>
+                    <tr><td class="req">Estadísticas</td><td><code>UPDATE STATISTICS ... FULLSCAN</code></td><td>Precisión total.</td></tr>
+                    <tr><td class="req">Auditoría</td><td>Tabla <code>IndexMaintenanceAudit</code></td><td>Trazabilidad completa de cada acción.</td></tr>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-chess-queen"></i> <strong>Umbrales estándar</strong> (5% y 30%).</li>
+                    <li><i class="fas fa-filter"></i> <strong>Filtrado</strong> de índices pequeños (page_count > 500).</li>
+                    <li><i class="fas fa-rotate-left"></i> <strong>Manejo de errores</strong> con <code>TRY...CATCH</code> dentro del cursor.</li>
+                    <li><i class="fas fa-clipboard-list"></i> <strong>Auditoría detallada</strong> (duración, comando, error).</li>
+                    <li><i class="fas fa-clock"></i> <strong>Medición de duración</strong> por índice.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PIE DE PÁGINA -->
+        <!-- ============================================================ -->
+        <div class="footer-note">
+            <span><i class="fas fa-print"></i> Tema 2 – Proyectos 1 al 5 unificados · Versión 1.0</span>
+            <span><i class="far fa-calendar-alt"></i> 2026-01-14</span>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT: Pestañas + Copiar -->
+    <!-- ============================================================ -->
+    <script>
+        // ---------- PESTAÑAS ----------
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Desactivar todas
+                tabs.forEach(b => b.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                // Activar la seleccionada
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ---------- COPIAR CÓDIGO ----------
+        function copyCode(blockId) {
+            const codeBlock = document.getElementById(blockId);
+            const pre = codeBlock.querySelector('pre');
+            const text = pre.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = codeBlock.querySelector('.copy-btn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                setTimeout(() => { btn.innerHTML = original; }, 2500);
+            }).catch(() => alert('No se pudo copiar.'));
+        }
+    </script>
+
+</body>
+</html>

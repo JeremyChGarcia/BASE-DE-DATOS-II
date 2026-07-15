@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tema 3 – Proyectos 1 al 5 (unificados)</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ---------- RESET Y ESTILOS BASE ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f0f4f8;
+            color: #1e293b;
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12);
+            padding: 2rem 2.2rem;
+        }
+
+        /* ---------- ENCABEZADO ---------- */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 3px solid #0b7e6b;
+            padding-bottom: 1rem;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .header i {
+            font-size: 2.2rem;
+            color: #0b7e6b;
+            background: #dff1ed;
+            padding: 0.5rem;
+            border-radius: 14px;
+        }
+
+        .header h1 {
+            font-weight: 700;
+            font-size: 1.9rem;
+            color: #064e3b;
+        }
+
+        .header .badge {
+            margin-left: auto;
+            background: #0b7e6b;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+        }
+
+        /* ---------- PESTAÑAS ---------- */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.2rem;
+        }
+
+        .tab-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px 30px 0 0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #334155;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn i {
+            font-size: 0.9rem;
+        }
+
+        .tab-btn:hover {
+            background: #dbeafe;
+            color: #0b2b44;
+        }
+
+        .tab-btn.active {
+            background: #0b7e6b;
+            color: white;
+        }
+
+        /* ---------- CONTENIDO DE PESTAÑAS ---------- */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------- TARJETAS DE SECCIONES ---------- */
+        .section-card {
+            background: #f9fcff;
+            border-radius: 16px;
+            padding: 1.4rem 1.8rem;
+            margin-bottom: 1.8rem;
+            border-left: 6px solid #0b7e6b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: border-color 0.2s;
+        }
+
+        .section-card:hover {
+            border-left-color: #14b8a6;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #064e3b;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-title i {
+            color: #0b7e6b;
+            font-size: 1.3rem;
+            width: 1.8rem;
+            text-align: center;
+        }
+
+        .highlight-box {
+            background: #dff1ed;
+            padding: 0.8rem 1.4rem;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            border: 1px solid #a8d5cb;
+        }
+
+        .highlight-box ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ---------- BLOQUE DE CÓDIGO ---------- */
+        .code-block {
+            background: #0f1a2c;
+            color: #e3eaf0;
+            border-radius: 14px;
+            padding: 1.4rem 1.8rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            margin: 0.8rem 0 0.2rem 0;
+            box-shadow: inset 0 0 0 1px #2a3a52;
+            position: relative;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 1rem;
+            background: #2a3a52;
+            border: none;
+            color: #b0c8dd;
+            font-size: 0.95rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .code-block .copy-btn:hover {
+            background: #3b5070;
+            color: white;
+        }
+
+        /* Resaltado de sintaxis */
+        .sql-keyword { color: #ff9f7c; font-weight: 600; }
+        .sql-string { color: #b5d4a8; }
+        .sql-comment { color: #6a8ba0; font-style: italic; }
+        .sql-function { color: #7ec8e3; }
+        .sql-variable { color: #f5c78a; }
+        .sql-number { color: #d4b8d9; }
+        .sql-database { color: #a8d4e6; font-weight: 500; }
+        .sql-table { color: #f0c8a0; font-weight: 500; }
+        .sql-operator { color: #d4b8d9; }
+
+        .ps-command { color: #7ec8e3; }
+        .ps-string { color: #b5d4a8; }
+        .ps-comment { color: #6a8ba0; font-style: italic; }
+        .ps-variable { color: #f5c78a; }
+        .ps-keyword { color: #ff9f7c; font-weight: 600; }
+
+        /* ---------- TABLAS DE JUSTIFICACIÓN ---------- */
+        .justify-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.93rem;
+            margin: 0.6rem 0;
+        }
+
+        .justify-table th {
+            background: #c5e8e0;
+            color: #064e3b;
+            font-weight: 600;
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-bottom: 2px solid #a8d5cb;
+        }
+
+        .justify-table td {
+            padding: 0.5rem 0.8rem;
+            border-bottom: 1px solid #dfeaf2;
+            vertical-align: top;
+        }
+
+        .justify-table .req {
+            font-weight: 600;
+            color: #064e3b;
+            white-space: nowrap;
+        }
+
+        /* ---------- LISTA DE BUENAS PRÁCTICAS ---------- */
+        .bp-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.4rem 0 0 0;
+        }
+
+        .bp-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ecf3f8;
+        }
+
+        .bp-list li:last-child {
+            border-bottom: none;
+        }
+
+        .bp-list li i {
+            color: #0b7e6b;
+            font-size: 1rem;
+            margin-top: 0.1rem;
+            min-width: 1.4rem;
+        }
+
+        .bp-list li strong {
+            color: #064e3b;
+        }
+
+        /* ---------- PIE ---------- */
+        .footer-note {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 2px dashed #d4e2ed;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            color: #3d637f;
+            font-size: 0.9rem;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.8rem;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            .tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .tab-btn {
+                border-radius: 30px;
+                justify-content: center;
+            }
+            .section-card {
+                padding: 1rem 1rem;
+            }
+            .code-block {
+                font-size: 0.75rem;
+                padding: 1rem;
+            }
+            .justify-table {
+                font-size: 0.8rem;
+            }
+            .justify-table th,
+            .justify-table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .tab-btn { display: none; }
+            .tab-content { display: block !important; }
+            .code-block .copy-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!-- ENCABEZADO -->
+        <!-- ============================================================ -->
+        <div class="header">
+            <i class="fas fa-code-branch"></i>
+            <h1>Tema 3 · Automatización con T‑SQL y PowerShell</h1>
+            <span class="badge">Proyectos 1 – 5 unificados</span>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PESTAÑAS -->
+        <!-- ============================================================ -->
+        <div class="tabs" id="tabHeaders">
+            <button class="tab-btn active" data-tab="proyecto1"><i class="fas fa-database"></i> Proyecto 1</button>
+            <button class="tab-btn" data-tab="proyecto2"><i class="fas fa-file-export"></i> Proyecto 2</button>
+            <button class="tab-btn" data-tab="proyecto3"><i class="fas fa-file-excel"></i> Proyecto 3</button>
+            <button class="tab-btn" data-tab="proyecto4"><i class="fas fa-user-slash"></i> Proyecto 4</button>
+            <button class="tab-btn" data-tab="proyecto5"><i class="fas fa-shield-halved"></i> Proyecto 5</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- CONTENIDO DE PESTAÑAS -->
+        <!-- ============================================================ -->
+
+        <!-- ==================== PROYECTO 1 ==================== -->
+        <div id="proyecto1" class="tab-content active">
+            <!-- Enunciado -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Crear un procedimiento almacenado</strong> que genere automáticamente un respaldo completo y posteriormente sea ejecutado mediante PowerShell.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check" style="margin-right:0.5rem;color:#0b7e6b;"></i> El script debe desarrollar:
+                    <ul>
+                        <li><strong>Stored Procedure</strong></li>
+                        <li><strong>BACKUP DATABASE</strong></li>
+                        <li><strong>PowerShell Invoke-Sqlcmd</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Script SP -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-database"></i> 2. Script T‑SQL · Stored Procedure</div>
+                <div class="code-block" id="p1-sql">
+                    <button class="copy-btn" onclick="copyCode('p1-sql')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- ========================================================================</span>
+<span class="sql-comment">--  TEMA 3 – PROYECTO 1</span>
+<span class="sql-comment">--  Procedimiento almacenado para backup completo de GradosTitulos</span>
+<span class="sql-comment">--  Incluye compresión, verificación (CHECKSUM) y nombre dinámico</span>
+<span class="sql-comment">-- ========================================================================</span>
+
+<span class="sql-keyword">USE</span> [GradosTitulos];
+<span class="sql-keyword">GO</span>
+
+<span class="sql-keyword">IF OBJECT_ID</span>(<span class="sql-string">'dbo.usp_BackupCompleto'</span>, <span class="sql-string">'P'</span>) <span class="sql-keyword">IS NOT NULL</span>
+    <span class="sql-keyword">DROP PROCEDURE</span> <span class="sql-database">dbo</span>.<span class="sql-variable">usp_BackupCompleto</span>;
+<span class="sql-keyword">GO</span>
+
+<span class="sql-keyword">CREATE PROCEDURE</span> <span class="sql-database">dbo</span>.<span class="sql-variable">usp_BackupCompleto</span>
+    <span class="sql-variable">@BackupPath</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">500</span>) = <span class="sql-string">N'C:\Backups\'</span>,
+    <span class="sql-variable">@DatabaseName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">128</span>) = <span class="sql-string">N'GradosTitulos'</span>,
+    <span class="sql-variable">@WithCompression</span> <span class="sql-keyword">BIT</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@WithChecksum</span> <span class="sql-keyword">BIT</span> = <span class="sql-number">1</span>,
+    <span class="sql-variable">@BackupFileName</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">255</span>) = <span class="sql-keyword">NULL</span> <span class="sql-keyword">OUTPUT</span>,
+    <span class="sql-variable">@ErrorMessage</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-keyword">MAX</span>) = <span class="sql-keyword">NULL</span> <span class="sql-keyword">OUTPUT</span>
+<span class="sql-keyword">AS</span>
+<span class="sql-keyword">BEGIN</span>
+    <span class="sql-keyword">SET</span> <span class="sql-variable">NOCOUNT</span> <span class="sql-keyword">ON</span>;
+
+    <span class="sql-keyword">BEGIN</span> <span class="sql-keyword">TRY</span>
+        <span class="sql-keyword">DECLARE</span> <span class="sql-variable">@DirCommand</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">500</span>) = <span class="sql-string">'EXEC xp_create_subdir '''</span> <span class="sql-operator">+</span> <span class="sql-variable">@BackupPath</span> <span class="sql-operator">+</span> <span class="sql-string">''';'</span>;
+        <span class="sql-keyword">EXEC</span> <span class="sql-variable">sp_executesql</span> <span class="sql-variable">@DirCommand</span>;
+
+        <span class="sql-keyword">DECLARE</span> <span class="sql-variable">@Timestamp</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-number">20</span>) = <span class="sql-variable">FORMAT</span>(<span class="sql-variable">GETDATE</span>(), <span class="sql-string">'yyyyMMdd_HHmmss'</span>);
+        <span class="sql-keyword">SET</span> <span class="sql-variable">@BackupFileName</span> = <span class="sql-variable">@BackupPath</span> <span class="sql-operator">+</span> <span class="sql-variable">@DatabaseName</span> <span class="sql-operator">+</span> <span class="sql-string">'_Full_'</span> <span class="sql-operator">+</span> <span class="sql-variable">@Timestamp</span> <span class="sql-operator">+</span> <span class="sql-string">'.bak'</span>;
+
+        <span class="sql-keyword">DECLARE</span> <span class="sql-variable">@SQL</span> <span class="sql-keyword">NVARCHAR</span>(<span class="sql-keyword">MAX</span>) = <span class="sql-string">'BACKUP DATABASE ['</span> <span class="sql-operator">+</span> <span class="sql-variable">@DatabaseName</span> <span class="sql-operator">+</span> <span class="sql-string">'] TO DISK = N'''</span> <span class="sql-operator">+</span> <span class="sql-variable">@BackupFileName</span> <span class="sql-operator">+</span> <span class="sql-string">''' WITH INIT, STATS = 10'</span>;
+
+        <span class="sql-keyword">IF</span> <span class="sql-variable">@WithCompression</span> = <span class="sql-number">1</span> <span class="sql-keyword">SET</span> <span class="sql-variable">@SQL</span> = <span class="sql-variable">@SQL</span> <span class="sql-operator">+</span> <span class="sql-string">', COMPRESSION'</span>;
+        <span class="sql-keyword">IF</span> <span class="sql-variable">@WithChecksum</span> = <span class="sql-number">1</span> <span class="sql-keyword">SET</span> <span class="sql-variable">@SQL</span> = <span class="sql-variable">@SQL</span> <span class="sql-operator">+</span> <span class="sql-string">', CHECKSUM'</span>;
+
+        <span class="sql-keyword">EXEC</span> <span class="sql-variable">sp_executesql</span> <span class="sql-variable">@SQL</span>;
+    <span class="sql-keyword">END</span> <span class="sql-keyword">TRY</span>
+    <span class="sql-keyword">BEGIN</span> <span class="sql-keyword">CATCH</span>
+        <span class="sql-keyword">SET</span> <span class="sql-variable">@ErrorMessage</span> = <span class="sql-variable">ERROR_MESSAGE</span>();
+        <span class="sql-keyword">RAISERROR</span>(<span class="sql-variable">@ErrorMessage</span>, <span class="sql-number">16</span>, <span class="sql-number">1</span>);
+    <span class="sql-keyword">END</span> <span class="sql-keyword">CATCH</span>
+<span class="sql-keyword">END</span>;
+<span class="sql-keyword">GO</span></pre>
+                </div>
+                <div style="margin-top:0.5rem;font-size:0.9rem;color:#3d637f;">
+                    <i class="fas fa-info-circle"></i> SP parametrizado con creación automática de carpeta y nombre con timestamp.
+                </div>
+            </div>
+
+            <!-- Script PowerShell -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-terminal"></i> 3. Script PowerShell · Invoke-Sqlcmd</div>
+                <div class="code-block" id="p1-ps">
+                    <button class="copy-btn" onclick="copyCode('p1-ps')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="ps-comment"># TEMA 3 – PROYECTO 1</span>
+<span class="ps-comment"># Script PowerShell para ejecutar el SP de backup</span>
+
+<span class="ps-variable">$ServerInstance</span> = <span class="ps-string">"localhost"</span>
+<span class="ps-variable">$Database</span>      = <span class="ps-string">"GradosTitulos"</span>
+<span class="ps-variable">$BackupPath</span>    = <span class="ps-string">"C:\Backups\"</span>
+
+<span class="ps-variable">$SqlCommand</span> = <span class="ps-string">@"
+    EXEC dbo.usp_BackupCompleto
+        @BackupPath = N'$BackupPath',
+        @DatabaseName = N'GradosTitulos',
+        @WithCompression = 1,
+        @WithChecksum = 1;
+"@</span>
+
+<span class="ps-keyword">try</span> {
+    <span class="ps-command">Invoke-Sqlcmd</span> -ServerInstance <span class="ps-variable">$ServerInstance</span> -Database <span class="ps-variable">$Database</span> -Query <span class="ps-variable">$SqlCommand</span> -QueryTimeout <span class="ps-number">0</span>
+    <span class="ps-variable">Write-Host</span> <span class="ps-string">"✅ Backup completado."</span> -ForegroundColor Green
+} <span class="ps-keyword">catch</span> {
+    <span class="ps-variable">Write-Host</span> <span class="ps-string">"❌ Error: $($_.Exception.Message)"</span> -ForegroundColor Red
+}</pre>
+                </div>
+            </div>
+
+            <!-- Justificación y Buenas Prácticas (resumidas para no alargar) -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 4. Justificación técnica</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">Stored Procedure</td><td><code>usp_BackupCompleto</code> con parámetros</td><td>Reutilizable y parametrizable.</td></tr>
+                    <tr><td class="req">BACKUP DATABASE</td><td>Con <code>COMPRESSION</code> y <code>CHECKSUM</code></td><td>Ahorro de espacio e integridad.</td></tr>
+                    <tr><td class="req">PowerShell</td><td><code>Invoke-Sqlcmd</code></td><td>Automatización estándar en Windows.</td></tr>
+                </table>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 5. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-parameter"></i> SP parametrizado para reutilización.</li>
+                    <li><i class="fas fa-clock"></i> Nombre de archivo con timestamp.</li>
+                    <li><i class="fas fa-folder-tree"></i> Creación automática de carpetas.</li>
+                    <li><i class="fas fa-shield-halved"></i> Uso de <code>CHECKSUM</code> y <code>COMPRESSION</code>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 2 ==================== -->
+        <div id="proyecto2" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Automatizar la exportación diaria</strong> de los trámites aprobados hacia un archivo CSV utilizando PowerShell.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Utilizar:
+                    <ul><li><strong>SELECT</strong></li><li><strong>Invoke-Sqlcmd</strong></li><li><strong>Export-Csv</strong></li></ul>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-terminal"></i> 2. Script PowerShell</div>
+                <div class="code-block" id="p2-ps">
+                    <button class="copy-btn" onclick="copyCode('p2-ps')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="ps-comment"># TEMA 3 – PROYECTO 2</span>
+<span class="ps-variable">$ServerInstance</span> = <span class="ps-string">"localhost"</span>
+<span class="ps-variable">$Database</span>      = <span class="ps-string">"GradosTitulos"</span>
+<span class="ps-variable">$OutputPath</span>    = <span class="ps-string">"C:\Exports\"</span>
+<span class="ps-variable">$DateStamp</span>     = <span class="ps-command">Get-Date</span> -Format <span class="ps-string">"yyyyMMdd"</span>
+<span class="ps-variable">$FullPath</span>      = <span class="ps-command">Join-Path</span> <span class="ps-variable">$OutputPath</span> <span class="ps-string">"TramitesAprobados_$DateStamp.csv"</span>
+
+<span class="ps-variable">$SqlQuery</span> = <span class="ps-string">@"
+    SELECT Id, NumeroTramite, FechaSolicitud, FechaAprobacion, PersonaId, TipoTramite, Estado
+    FROM dbo.Tramite
+    WHERE Estado = 'Aprobado' AND CAST(FechaAprobacion AS DATE) = CAST(GETDATE() AS DATE)
+"@</span>
+
+<span class="ps-keyword">try</span> {
+    <span class="ps-variable">$Data</span> = <span class="ps-command">Invoke-Sqlcmd</span> -ServerInstance <span class="ps-variable">$ServerInstance</span> -Database <span class="ps-variable">$Database</span> -Query <span class="ps-variable">$SqlQuery</span>
+    <span class="ps-keyword">if</span> (<span class="ps-variable">$Data</span>) {
+        <span class="ps-variable">$Data</span> | <span class="ps-command">Export-Csv</span> -Path <span class="ps-variable">$FullPath</span> -NoTypeInformation -Encoding UTF8
+        <span class="ps-variable">Write-Host</span> <span class="ps-string">"✅ Exportados $($Data.Count) registros."</span> -ForegroundColor Green
+    } <span class="ps-keyword">else</span> {
+        <span class="ps-variable">Write-Host</span> <span class="ps-string">"⚠️ No hay trámites aprobados hoy."</span> -ForegroundColor Yellow
+    }
+} <span class="ps-keyword">catch</span> {
+    <span class="ps-variable">Write-Host</span> <span class="ps-string">"❌ Error: $($_.Exception.Message)"</span> -ForegroundColor Red
+}</pre>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">SELECT</td><td>Consulta filtrada por estado y fecha</td><td>Obtiene solo los registros necesarios.</td></tr>
+                    <tr><td class="req">Invoke-Sqlcmd</td><td>Ejecución de la consulta</td><td>Conexión segura a SQL Server.</td></tr>
+                    <tr><td class="req">Export-Csv</td><td><code>-NoTypeInformation -Encoding UTF8</code></td><td>Formato estándar y compatible.</td></tr>
+                </table>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-clock"></i> Nombre de archivo con fecha.</li>
+                    <li><i class="fas fa-check-circle"></i> Verificación de datos antes de exportar.</li>
+                    <li><i class="fas fa-rotate"></i> Rotación de archivos (opcional).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 3 ==================== -->
+        <div id="proyecto3" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Desarrollar un proceso automático</strong> que consulte diariamente la cantidad de trámites, genere un archivo Excel y almacene una copia en una carpeta de respaldo.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Utilizar:
+                    <ul><li><strong>T‑SQL</strong></li><li><strong>PowerShell</strong></li><li><strong>Export-Excel (ImportExcel)</strong></li></ul>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-database"></i> 2. T‑SQL (consulta)</div>
+                <div class="code-block" id="p3-sql">
+                    <button class="copy-btn" onclick="copyCode('p3-sql')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- TEMA 3 – PROYECTO 3 – Consulta de resumen diario</span>
+<span class="sql-keyword">SELECT</span> Estado, <span class="sql-variable">COUNT</span>(*) AS Cantidad,
+    <span class="sql-variable">MIN</span>(FechaSolicitud) AS PrimerTramite,
+    <span class="sql-variable">MAX</span>(FechaSolicitud) AS UltimoTramite,
+    <span class="sql-variable">CAST</span>(GETDATE() AS DATE) AS FechaReporte
+<span class="sql-keyword">FROM</span> dbo.Tramite
+<span class="sql-keyword">WHERE</span> <span class="sql-variable">CAST</span>(FechaSolicitud AS DATE) = <span class="sql-variable">CAST</span>(GETDATE() AS DATE)
+<span class="sql-keyword">GROUP BY</span> Estado;</pre>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-terminal"></i> 3. PowerShell (Export-Excel)</div>
+                <div class="code-block" id="p3-ps">
+                    <button class="copy-btn" onclick="copyCode('p3-ps')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="ps-comment"># TEMA 3 – PROYECTO 3</span>
+<span class="ps-keyword">if</span> (<span class="ps-operator">-not</span> (<span class="ps-command">Get-Module</span> -Name ImportExcel -ListAvailable)) {
+    <span class="ps-command">Install-Module</span> -Name ImportExcel -Scope CurrentUser -Force
+}
+<span class="ps-command">Import-Module</span> -Name ImportExcel -Force
+
+<span class="ps-variable">$ServerInstance</span> = <span class="ps-string">"localhost"</span>
+<span class="ps-variable">$Database</span>      = <span class="ps-string">"GradosTitulos"</span>
+<span class="ps-variable">$OutputFolder</span>  = <span class="ps-string">"C:\Reportes\"</span>
+<span class="ps-variable">$BackupFolder</span>  = <span class="ps-string">"C:\BackupReportes\"</span>
+<span class="ps-variable">$DateStamp</span>     = <span class="ps-command">Get-Date</span> -Format <span class="ps-string">"yyyyMMdd"</span>
+<span class="ps-variable">$FileName</span>      = <span class="ps-string">"ReporteTramites_$DateStamp.xlsx"</span>
+<span class="ps-variable">$FullPath</span>      = <span class="ps-command">Join-Path</span> <span class="ps-variable">$OutputFolder</span> <span class="ps-variable">$FileName</span>
+<span class="ps-variable">$BackupPath</span>    = <span class="ps-command">Join-Path</span> <span class="ps-variable">$BackupFolder</span> <span class="ps-variable">$FileName</span>
+
+<span class="ps-variable">$SqlQuery</span> = <span class="ps-string">@"
+    SELECT Estado, COUNT(*) AS Cantidad,
+           MIN(FechaSolicitud) AS PrimerTramite,
+           MAX(FechaSolicitud) AS UltimoTramite,
+           CAST(GETDATE() AS DATE) AS FechaReporte
+    FROM dbo.Tramite
+    WHERE CAST(FechaSolicitud AS DATE) = CAST(GETDATE() AS DATE)
+    GROUP BY Estado;
+"@</span>
+
+<span class="ps-keyword">try</span> {
+    <span class="ps-variable">$Data</span> = <span class="ps-command">Invoke-Sqlcmd</span> -ServerInstance <span class="ps-variable">$ServerInstance</span> -Database <span class="ps-variable">$Database</span> -Query <span class="ps-variable">$SqlQuery</span>
+    <span class="ps-keyword">if</span> (<span class="ps-variable">$Data</span>) {
+        <span class="ps-variable">$Data</span> | <span class="ps-command">Export-Excel</span> -Path <span class="ps-variable">$FullPath</span> -WorksheetName <span class="ps-string">"Resumen"</span> -AutoSize -BoldTopRow -TableStyle Light13
+        <span class="ps-command">Copy-Item</span> -Path <span class="ps-variable">$FullPath</span> -Destination <span class="ps-variable">$BackupPath</span> -Force
+        <span class="ps-variable">Write-Host</span> <span class="ps-string">"✅ Reporte generado y respaldado."</span> -ForegroundColor Green
+    }
+} <span class="ps-keyword">catch</span> {
+    <span class="ps-variable">Write-Host</span> <span class="ps-string">"❌ Error: $($_.Exception.Message)"</span> -ForegroundColor Red
+}</pre>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 4. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">T‑SQL</td><td>Consulta agregada por estado</td><td>Resumen eficiente.</td></tr>
+                    <tr><td class="req">Export-Excel</td><td>Módulo ImportExcel</td><td>Excel nativo sin necesidad de Office.</td></tr>
+                    <tr><td class="req">Respaldo</td><td>Copia automática</td><td>Protección del reporte.</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 4 ==================== -->
+        <div id="proyecto4" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Crear un sistema automático</strong> que detecte docentes inactivos durante más de un año y genere un archivo con el reporte.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Implementar:
+                    <ul><li><strong>consultas T‑SQL</strong></li><li><strong>PowerShell</strong></li><li><strong>exportación automática</strong></li></ul>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-database"></i> 2. T‑SQL</div>
+                <div class="code-block" id="p4-sql">
+                    <button class="copy-btn" onclick="copyCode('p4-sql')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="sql-comment">-- TEMA 3 – PROYECTO 4 – Docentes inactivos &gt; 1 año</span>
+<span class="sql-keyword">SELECT</span> Id, Nombres, Apellidos, Email, Telefono,
+    FechaContratacion, UltimaActividad,
+    <span class="sql-variable">DATEDIFF</span>(DAY, UltimaActividad, GETDATE()) AS DiasInactivo,
+    Estado
+<span class="sql-keyword">FROM</span> dbo.Docente
+<span class="sql-keyword">WHERE</span> UltimaActividad &lt; DATEADD(YEAR, -1, GETDATE())
+  <span class="sql-keyword">AND</span> Estado &lt;&gt; 'Inactivo'
+<span class="sql-keyword">ORDER BY</span> UltimaActividad;</pre>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-terminal"></i> 3. PowerShell</div>
+                <div class="code-block" id="p4-ps">
+                    <button class="copy-btn" onclick="copyCode('p4-ps')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="ps-comment"># TEMA 3 – PROYECTO 4</span>
+<span class="ps-variable">$ServerInstance</span> = <span class="ps-string">"localhost"</span>
+<span class="ps-variable">$Database</span>      = <span class="ps-string">"GradosTitulos"</span>
+<span class="ps-variable">$OutputFolder</span>  = <span class="ps-string">"C:\ReportesDocentes\"</span>
+<span class="ps-variable">$DateStamp</span>     = <span class="ps-command">Get-Date</span> -Format <span class="ps-string">"yyyyMMdd"</span>
+<span class="ps-variable">$FullPath</span>      = <span class="ps-command">Join-Path</span> <span class="ps-variable">$OutputFolder</span> <span class="ps-string">"DocentesInactivos_$DateStamp.csv"</span>
+
+<span class="ps-variable">$SqlQuery</span> = <span class="ps-string">@"
+    SELECT Id, Nombres, Apellidos, Email, Telefono,
+           FechaContratacion, UltimaActividad,
+           DATEDIFF(DAY, UltimaActividad, GETDATE()) AS DiasInactivo,
+           Estado
+    FROM dbo.Docente
+    WHERE UltimaActividad &lt; DATEADD(YEAR, -1, GETDATE())
+      AND Estado &lt;&gt; 'Inactivo'
+    ORDER BY UltimaActividad;
+"@</span>
+
+<span class="ps-keyword">try</span> {
+    <span class="ps-variable">$Data</span> = <span class="ps-command">Invoke-Sqlcmd</span> -ServerInstance <span class="ps-variable">$ServerInstance</span> -Database <span class="ps-variable">$Database</span> -Query <span class="ps-variable">$SqlQuery</span>
+    <span class="ps-keyword">if</span> (<span class="ps-variable">$Data</span>) {
+        <span class="ps-variable">$Data</span> | <span class="ps-command">Export-Csv</span> -Path <span class="ps-variable">$FullPath</span> -NoTypeInformation -Encoding UTF8
+        <span class="ps-variable">Write-Host</span> <span class="ps-string">"✅ $($Data.Count) docentes inactivos detectados."</span> -ForegroundColor Green
+    } <span class="ps-keyword">else</span> {
+        <span class="ps-variable">Write-Host</span> <span class="ps-string">"✅ No hay docentes inactivos."</span> -ForegroundColor Yellow
+    }
+} <span class="ps-keyword">catch</span> {
+    <span class="ps-variable">Write-Host</span> <span class="ps-string">"❌ Error: $($_.Exception.Message)"</span> -ForegroundColor Red
+}</pre>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 4. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">T‑SQL</td><td>Filtro por fecha de última actividad</td><td>Detección precisa.</td></tr>
+                    <tr><td class="req">Exportación</td><td>CSV con UTF‑8</td><td>Formato universal.</td></tr>
+                    <tr><td class="req">Automatización</td><td>Script programable</td><td>Ejecución periódica.</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== PROYECTO 5 ==================== -->
+        <div id="proyecto5" class="tab-content">
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-question-circle"></i> 1. Enunciado</div>
+                <p><strong>Implementar una solución de automatización completa</strong> que ejecute respaldos, valide con CHECKDB, genere reportes, comprima los respaldos y elimine los mayores a 30 días.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-list-check"></i> Integrar:
+                    <ul><li><strong>SQL Server</strong></li><li><strong>PowerShell</strong></li><li><strong>compresión ZIP</strong></li><li><strong>registro de auditoría</strong></li><li><strong>manejo de errores</strong></li></ul>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-terminal"></i> 2. Script PowerShell (completo)</div>
+                <div class="code-block" id="p5-ps">
+                    <button class="copy-btn" onclick="copyCode('p5-ps')"><i class="fas fa-copy"></i> Copiar</button>
+                    <pre><span class="ps-comment"># TEMA 3 – PROYECTO 5 – Automatización integral</span>
+<span class="ps-variable">$ServerInstance</span> = <span class="ps-string">"localhost"</span>
+<span class="ps-variable">$Database</span>      = <span class="ps-string">"GradosTitulos"</span>
+<span class="ps-variable">$BackupRoot</span>    = <span class="ps-string">"C:\Backups\"</span>
+<span class="ps-variable">$LogPath</span>       = <span class="ps-string">"C:\Logs\BackupAudit.log"</span>
+<span class="ps-variable">$RetentionDays</span> = <span class="ps-number">30</span>
+<span class="ps-variable">$DateStamp</span>     = <span class="ps-command">Get-Date</span> -Format <span class="ps-string">"yyyyMMdd_HHmmss"</span>
+<span class="ps-variable">$BackupFolder</span>  = <span class="ps-command">Join-Path</span> <span class="ps-variable">$BackupRoot</span> <span class="ps-variable">$DateStamp</span>
+<span class="ps-variable">$BackupFile</span>    = <span class="ps-command">Join-Path</span> <span class="ps-variable">$BackupFolder</span> <span class="ps-string">"$Database.bak"</span>
+<span class="ps-variable">$ZipFile</span>       = <span class="ps-command">Join-Path</span> <span class="ps-variable">$BackupFolder</span> <span class="ps-string">"$Database.zip"</span>
+
+<span class="ps-keyword">function</span> <span class="ps-command">Write-Log</span> {
+    <span class="ps-keyword">param</span> ([<span class="ps-variable">string</span>]<span class="ps-variable">$Message</span>, [<span class="ps-variable">string</span>]<span class="ps-variable">$Level</span> = <span class="ps-string">"INFO"</span>)
+    <span class="ps-variable">$Timestamp</span> = <span class="ps-command">Get-Date</span> -Format <span class="ps-string">"yyyy-MM-dd HH:mm:ss"</span>
+    <span class="ps-command">Add-Content</span> -Path <span class="ps-variable">$LogPath</span> -Value <span class="ps-string">"[$Timestamp] [$Level] $Message"</span>
+    <span class="ps-variable">Write-Host</span> <span class="ps-string">"[$Timestamp] [$Level] $Message"</span> -ForegroundColor <span class="ps-keyword">if</span> (<span class="ps-variable">$Level</span> -eq <span class="ps-string">"ERROR"</span>) { Red } <span class="ps-keyword">else</span> { Cyan }
+}
+
+<span class="ps-keyword">try</span> {
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"========== INICIO =========="</span>
+    <span class="ps-command">New-Item</span> -ItemType Directory -Path <span class="ps-variable">$BackupFolder</span> -Force | <span class="ps-command">Out-Null</span>
+
+    <span class="ps-comment"># Backup</span>
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"Ejecutando BACKUP..."</span>
+    <span class="ps-variable">$BackupQuery</span> = <span class="ps-string">"BACKUP DATABASE [$Database] TO DISK = N'$BackupFile' WITH COMPRESSION, CHECKSUM, INIT, STATS = 10;"</span>
+    <span class="ps-command">Invoke-Sqlcmd</span> -ServerInstance <span class="ps-variable">$ServerInstance</span> -Query <span class="ps-variable">$BackupQuery</span> -QueryTimeout <span class="ps-number">0</span>
+
+    <span class="ps-comment"># CHECKDB</span>
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"Ejecutando CHECKDB..."</span>
+    <span class="ps-command">Invoke-Sqlcmd</span> -ServerInstance <span class="ps-variable">$ServerInstance</span> -Database <span class="ps-variable">$Database</span> -Query <span class="ps-string">"DBCC CHECKDB (N'$Database') WITH NO_INFOMSGS;"</span> -QueryTimeout <span class="ps-number">0</span>
+
+    <span class="ps-comment"># Compresión ZIP</span>
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"Comprimiendo a ZIP..."</span>
+    <span class="ps-command">Compress-Archive</span> -Path <span class="ps-variable">$BackupFile</span> -DestinationPath <span class="ps-variable">$ZipFile</span> -CompressionLevel Optimal
+
+    <span class="ps-comment"># Eliminar antiguos</span>
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"Eliminando respaldos &gt; $RetentionDays días..."</span>
+    <span class="ps-variable">$CutoffDate</span> = (<span class="ps-command">Get-Date</span>).AddDays(-<span class="ps-variable">$RetentionDays</span>)
+    <span class="ps-command">Get-ChildItem</span> -Path <span class="ps-variable">$BackupRoot</span> -Directory | <span class="ps-command">Where-Object</span> { <span class="ps-variable">$_.CreationTime</span> -lt <span class="ps-variable">$CutoffDate</span> } | <span class="ps-command">Remove-Item</span> -Recurse -Force
+
+    <span class="ps-comment"># Reporte</span>
+    <span class="ps-variable">$ReportFile</span> = <span class="ps-command">Join-Path</span> <span class="ps-variable">$BackupFolder</span> <span class="ps-string">"Reporte.txt"</span>
+    <span class="ps-variable">$ReportContent</span> = <span class="ps-string">@"
+Reporte de Respaldo
+Fecha: $(Get-Date)
+Servidor: $ServerInstance
+Base de datos: $Database
+Backup: $BackupFile
+ZIP: $ZipFile
+CHECKDB: Exitoso
+Retención: $RetentionDays días
+"@</span>
+    <span class="ps-command">Set-Content</span> -Path <span class="ps-variable">$ReportFile</span> -Value <span class="ps-variable">$ReportContent</span>
+
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"========== PROCESO COMPLETADO =========="</span>
+} <span class="ps-keyword">catch</span> {
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"ERROR: $($_.Exception.Message)"</span> -Level <span class="ps-string">"ERROR"</span>
+    <span class="ps-command">Write-Log</span> <span class="ps-string">"========== PROCESO FALLIDO =========="</span> -Level <span class="ps-string">"ERROR"</span>
+}</pre>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. Justificación</div>
+                <table class="justify-table">
+                    <tr><th>Requerimiento</th><th>Implementación</th><th>Razón</th></tr>
+                    <tr><td class="req">Backup + CHECKDB</td><td><code>BACKUP</code> con <code>COMPRESSION</code>/<code>CHECKSUM</code> y <code>DBCC CHECKDB</code></td><td>Protección e integridad.</td></tr>
+                    <tr><td class="req">Compresión ZIP</td><td><code>Compress-Archive</code></td><td>Ahorro adicional de espacio.</td></tr>
+                    <tr><td class="req">Eliminación</td><td>Filtro por <code>CreationTime</code> &gt; 30 días</td><td>Gestión automática de espacio.</td></tr>
+                    <tr><td class="req">Auditoría</td><td>Función <code>Write-Log</code></td><td>Trazabilidad completa.</td></tr>
+                </table>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> 4. Buenas prácticas</div>
+                <ul class="bp-list">
+                    <li><i class="fas fa-folder-tree"></i> Organización por carpetas con timestamp.</li>
+                    <li><i class="fas fa-rotate-left"></i> Manejo de errores robusto.</li>
+                    <li><i class="fas fa-clipboard-list"></i> Registro de auditoría detallado.</li>
+                    <li><i class="fas fa-print"></i> Generación de reporte por ejecución.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PIE DE PÁGINA -->
+        <!-- ============================================================ -->
+        <div class="footer-note">
+            <span><i class="fas fa-print"></i> Tema 3 – Proyectos 1 al 5 unificados · Versión 1.0</span>
+            <span><i class="far fa-calendar-alt"></i> 2026-01-14</span>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT: Pestañas + Copiar -->
+    <!-- ============================================================ -->
+    <script>
+        // ---------- PESTAÑAS ----------
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabs.forEach(b => b.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ---------- COPIAR CÓDIGO ----------
+        function copyCode(blockId) {
+            const codeBlock = document.getElementById(blockId);
+            const pre = codeBlock.querySelector('pre');
+            const text = pre.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = codeBlock.querySelector('.copy-btn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                setTimeout(() => { btn.innerHTML = original; }, 2500);
+            }).catch(() => alert('No se pudo copiar.'));
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SQL Server Agent · 5 Proyectos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ---------- RESET & BASE ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background: #0b0e1a;
+            color: #f0f4ff;
+        }
+
+        /* ---------- ANIMACION FONDO ---------- */
+        .bg-animated {
+            background: linear-gradient(135deg, #0b1428, #132044, #1b2f5e);
+            background-size: 400% 400%;
+            animation: grad 18s ease infinite;
+        }
+        @keyframes grad {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* ---------- HEADER ---------- */
+        .main-header {
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .main-header h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #00e5ff, #7c4dff, #00e5ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+        .main-header p {
+            font-size: 1.2rem;
+            color: #aab9e6;
+            max-width: 700px;
+            margin: 20px auto 0;
+            line-height: 1.8;
+        }
+        .main-header .badge {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 30px;
+            border-radius: 40px;
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid #00e5ff55;
+            color: #00e5ff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ---------- NAV ---------- */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(11, 14, 26, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 30px;
+            border-bottom: 1px solid #ffffff0a;
+        }
+        .sticky-nav a {
+            color: #b0c7f0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.3s;
+        }
+        .sticky-nav a:hover,
+        .sticky-nav a:focus {
+            color: #fff;
+            border-bottom-color: #00e5ff;
+        }
+
+        /* ---------- CONTAINER ---------- */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* ---------- TARJETAS PROYECTO ---------- */
+        .project-section {
+            margin-bottom: 70px;
+            scroll-margin-top: 80px;
+        }
+        .project-section .project-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .project-section .project-header .num {
+            font-size: 2.8rem;
+            font-weight: 800;
+            opacity: 0.2;
+            line-height: 1;
+        }
+        .project-section .project-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .project-section .project-header .accent-line {
+            flex: 1;
+            height: 3px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+            border-radius: 28px;
+            padding: 30px 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.8);
+        }
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--accent, #00e5ff);
+        }
+        .card p,
+        .card li {
+            line-height: 1.8;
+            color: #d6e2ff;
+        }
+        .card ul {
+            padding-left: 25px;
+            margin: 10px 0;
+        }
+        .card ul li {
+            margin: 8px 0;
+        }
+        .card pre {
+            background: #0a0e1a;
+            padding: 20px 24px;
+            border-radius: 16px;
+            overflow: auto;
+            color: #9effc0;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--accent, #00e5ff);
+            margin: 18px 0;
+        }
+
+        /* ---------- FLUJO (timeline) ---------- */
+        .flow-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0 10px;
+        }
+        .flow-step {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 16px 24px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 600;
+            color: #ccdcff;
+            transition: 0.3s;
+            backdrop-filter: blur(4px);
+        }
+        .flow-step:hover {
+            background: var(--accent);
+            color: #0b0e1a;
+            transform: scale(1.05);
+            border-color: var(--accent);
+        }
+
+        /* ---------- TABLA ---------- */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .table-wrap th {
+            background: var(--accent, #1e3a8a);
+            color: #fff;
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .table-wrap td {
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d6e2ff;
+        }
+
+        /* ---------- BOTONES ---------- */
+        .btn {
+            display: inline-block;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0b0e1a;
+            background: var(--accent, #00e5ff);
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 24px -6px var(--accent-shadow, rgba(0, 229, 255, 0.3));
+        }
+        .btn:hover {
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 14px 32px -8px var(--accent-shadow, rgba(0, 229, 255, 0.5));
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--accent, #00e5ff);
+            border: 2px solid var(--accent, #00e5ff);
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: var(--accent, #00e5ff);
+            color: #0b0e1a;
+        }
+
+        .msg-box {
+            margin-top: 20px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--accent, #00e5ff);
+            color: #d6e2ff;
+            display: none;
+        }
+        .msg-box.show {
+            display: block;
+        }
+
+        /* ---------- FOOTER ---------- */
+        .main-footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: #060a16;
+            border-top: 1px solid #ffffff08;
+            color: #6f82b0;
+            font-size: 0.95rem;
+        }
+        .main-footer span {
+            color: #00e5ff;
+        }
+
+        /* ---------- ANIMACION FADE ---------- */
+        .fade {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---------- COLORES POR PROYECTO ---------- */
+        .proyecto-1 {
+            --accent: #00b8d4;
+            --accent-shadow: rgba(0, 184, 212, 0.4);
+        }
+        .proyecto-2 {
+            --accent: #66bb6a;
+            --accent-shadow: rgba(102, 187, 106, 0.4);
+        }
+        .proyecto-3 {
+            --accent: #ef5350;
+            --accent-shadow: rgba(239, 83, 80, 0.4);
+        }
+        .proyecto-4 {
+            --accent: #ffa726;
+            --accent-shadow: rgba(255, 167, 38, 0.4);
+        }
+        .proyecto-5 {
+            --accent: #ab47bc;
+            --accent-shadow: rgba(171, 71, 188, 0.4);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2.6rem;
+            }
+            .project-section .project-header h2 {
+                font-size: 1.7rem;
+            }
+            .card {
+                padding: 22px 20px;
+            }
+            .sticky-nav {
+                gap: 8px 16px;
+            }
+            .sticky-nav a {
+                font-size: 0.8rem;
+            }
+            .flow-step {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .main-header h1 {
+                font-size: 2rem;
+            }
+            .project-section .project-header .num {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-animated">
+
+    <!-- ========== HEADER ========== -->
+    <header class="main-header">
+        <h1>⚡ SQL Server Agent</h1>
+        <p>5 proyectos integrados de automatización, monitoreo y notificaciones<br />con T‑SQL, Jobs, Alertas y Database Mail.</p>
+        <span class="badge">🔷 2026 · Automatización Inteligente</span>
+    </header>
+
+    <!-- ========== NAVEGACIÓN ========== -->
+    <nav class="sticky-nav">
+        <a href="#proyecto1">Proyecto 1</a>
+        <a href="#proyecto2">Proyecto 2</a>
+        <a href="#proyecto3">Proyecto 3</a>
+        <a href="#proyecto4">Proyecto 4</a>
+        <a href="#proyecto5">Proyecto 5</a>
+    </nav>
+
+    <!-- ========== CONTENIDO ========== -->
+    <main class="container">
+
+        <!-- ============================================================ -->
+        <!-- PROYECTO 1 -->
+        <!-- ============================================================ -->
+        <section class="project-section proyecto-1 fade" id="proyecto1">
+            <div class="project-header">
+                <span class="num">01</span>
+                <h2>Creación de Jobs · Reporte Diario</h2>
+                <span class="accent-line"></span>
+            </div>
+
+            <div class="card">
+                <h3>📋 Enunciado</h3>
+                <p>La Oficina de Grados y Títulos requiere generar automáticamente todos los días a las <strong>08:00 AM</strong> un reporte con la cantidad de trámites registrados durante el día anterior.</p>
+                <br />
+                <ul>
+                    <li>Crear un Job.</li>
+                    <li>Crear un Step en T‑SQL.</li>
+                    <li>Programar el Job diariamente.</li>
+                    <li>Registrar el resultado en una tabla de auditoría.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>💻 Script Principal</h3>
+                <pre>
+                    CREATE TABLE AuditoriaJobs(
+                        Id INT IDENTITY PRIMARY KEY,
+                        Fecha DATETIME,
+                        TotalTramites INT,
+                        Mensaje VARCHAR(200)
+                    );
+                    GO
+
+                    INSERT INTO AuditoriaJobs
+                    SELECT
+                        GETDATE(),
+                        COUNT(*),
+                        'Reporte generado correctamente'
+                    FROM Tramites
+                    WHERE CAST(FechaRegistro AS DATE) = CAST(GETDATE()-1 AS DATE);
+                    GO
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>⚙ Creación del Job</h3>
+                <pre>
+                    EXEC sp_add_job
+                        @job_name = 'Reporte Diario Tramites';
+
+                    EXEC sp_add_jobstep
+                        @job_name = 'Reporte Diario Tramites',
+                        @step_name = 'Generar Reporte',
+                        @subsystem = 'TSQL',
+                        @command = 'EXEC GenerarReporte';
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Flujo del Proceso</h3>
+                <div class="flow-row">
+                    <span class="flow-step">08:00 AM</span>
+                    <span class="flow-step">Ejecuta SQL Agent</span>
+                    <span class="flow-step">Consulta Trámites</span>
+                    <span class="flow-step">Guarda Auditoría</span>
+                    <span class="flow-step">Finaliza</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>✅ Buenas Prácticas</h3>
+                <ul>
+                    <li>Uso de tablas de auditoría.</li>
+                    <li>Automatización mediante SQL Server Agent.</li>
+                    <li>Separación de lógica con procedimientos.</li>
+                    <li>Registro de fecha y hora de ejecución.</li>
+                    <li>Nombres descriptivos y mantenibilidad.</li>
+                </ul>
+                <br />
+                <button class="btn" onclick="mostrarEstado('p1')">Ver Estado del Job</button>
+                <div id="p1" class="msg-box">✔ El Job se ejecuta diariamente a las 08:00 AM y registra el resultado en <strong>AuditoriaJobs</strong>.</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PROYECTO 2 -->
+        <!-- ============================================================ -->
+        <section class="project-section proyecto-2 fade" id="proyecto2">
+            <div class="project-header">
+                <span class="num">02</span>
+                <h2>Actualización Automática de FechaUltMod</h2>
+                <span class="accent-line"></span>
+            </div>
+
+            <div class="card">
+                <h3>📋 Enunciado</h3>
+                <p>Automatizar la actualización semanal del campo <strong>FechaUltMod</strong> para todos los trámites que permanezcan en estado <strong>EN_PROCESO</strong>, registrando la ejecución en el historial del Job.</p>
+            </div>
+
+            <div class="card">
+                <h3>💻 Script UPDATE</h3>
+                <pre>
+                    UPDATE Tramites
+                    SET FechaUltMod = GETDATE()
+                    WHERE Estado = 'EN_PROCESO';
+                </pre>
+                <h3 style="margin-top:20px;">⚙ Creación del Job</h3>
+                <pre>
+                    EXEC sp_add_job
+                        @job_name = 'Actualizar FechaUltMod';
+
+                    EXEC sp_add_jobstep
+                        @job_name = 'Actualizar FechaUltMod',
+                        @step_name = 'Actualizar Campo',
+                        @subsystem = 'TSQL',
+                        @command = 'UPDATE Tramites
+                                     SET FechaUltMod = GETDATE()
+                                     WHERE Estado = ''EN_PROCESO'';';
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Flujo de Automatización</h3>
+                <div class="flow-row">
+                    <span class="flow-step">📅 Inicio semanal</span>
+                    <span class="flow-step">🤖 SQL Server Agent</span>
+                    <span class="flow-step">📝 UPDATE</span>
+                    <span class="flow-step">📋 Historial</span>
+                    <span class="flow-step">✅ Fin</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Historial del Job</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Fecha</th><th>Hora</th><th>Estado</th></tr></thead>
+                        <tbody>
+                            <tr><td>07/07/2026</td><td>08:00 AM</td><td>✔ Ejecutado</td></tr>
+                            <tr><td>14/07/2026</td><td>08:00 AM</td><td>✔ Ejecutado</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>✅ Buenas Prácticas</h3>
+                <ul>
+                    <li>Automatizar procesos repetitivos con SQL Agent.</li>
+                    <li>Actualizar únicamente registros <strong>EN_PROCESO</strong>.</li>
+                    <li>Registrar historial de ejecución.</li>
+                    <li>Usar <code>GETDATE()</code> para fecha/hora del servidor.</li>
+                    <li>Nombres descriptivos para Job y Step.</li>
+                </ul>
+                <br />
+                <button class="btn" onclick="mostrarEstado('p2')">Ver Estado del Job</button>
+                <div id="p2" class="msg-box">✔ El Job se ejecuta semanalmente y actualiza correctamente el campo <strong>FechaUltMod</strong>.</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PROYECTO 3 -->
+        <!-- ============================================================ -->
+        <section class="project-section proyecto-3 fade" id="proyecto3">
+            <div class="project-header">
+                <span class="num">03</span>
+                <h2>Limpieza Automática de Registros Temporales</h2>
+                <span class="accent-line"></span>
+            </div>
+
+            <div class="card">
+                <h3>📋 Enunciado</h3>
+                <p>Crear un Job que se ejecute mensualmente para mover los registros antiguos (más de 180 días) a una tabla histórica y luego eliminarlos de <strong>Tramite.LogTemporal</strong>, garantizando integridad mediante transacciones.</p>
+            </div>
+
+            <div class="card">
+                <h3>💻 Script T‑SQL</h3>
+                <pre>
+                    BEGIN TRY
+                        BEGIN TRANSACTION
+
+                        INSERT INTO LogTemporalHistorico
+                        SELECT *
+                        FROM Tramite.LogTemporal
+                        WHERE FechaRegistro <= DATEADD(DAY, -180, GETDATE());
+
+                        DELETE
+                        FROM Tramite.LogTemporal
+                        WHERE FechaRegistro <= DATEADD(DAY, -180, GETDATE());
+
+                        COMMIT;
+                    END TRY
+                    BEGIN CATCH
+                        ROLLBACK;
+                        PRINT 'Error durante la ejecución';
+                    END CATCH;
+                </pre>
+                <h3 style="margin-top:20px;">⚙ SQL Server Agent</h3>
+                <pre>
+                    EXEC sp_add_job
+                        @job_name = 'Limpieza Mensual LogTemporal';
+
+                    EXEC sp_add_jobstep
+                        @job_name = 'Limpieza Mensual LogTemporal',
+                        @step_name = 'Mover y Eliminar Registros',
+                        @subsystem = 'TSQL',
+                        @command = 'EXEC dbo.LimpiezaLogTemporal';
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Flujo del Job</h3>
+                <div class="flow-row">
+                    <span class="flow-step">📅 Inicio Mensual</span>
+                    <span class="flow-step">📥 INSERT Histórico</span>
+                    <span class="flow-step">🗑 DELETE</span>
+                    <span class="flow-step">🔒 COMMIT</span>
+                    <span class="flow-step">✅ Finaliza</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Tecnologías Utilizadas</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Herramienta</th><th>Uso</th></tr></thead>
+                        <tbody>
+                            <tr><td>SQL Server Agent</td><td>Automatización del Job</td></tr>
+                            <tr><td>T‑SQL</td><td>INSERT y DELETE</td></tr>
+                            <tr><td>TRY…CATCH</td><td>Manejo de errores</td></tr>
+                            <tr><td>Transacciones</td><td>Integridad de datos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>✅ Buenas Prácticas</h3>
+                <ul>
+                    <li>Uso de <strong>BEGIN TRANSACTION</strong> para consistencia.</li>
+                    <li>Implementación de <strong>TRY…CATCH</strong>.</li>
+                    <li>Uso de <strong>ROLLBACK</strong> ante excepción.</li>
+                    <li>Separación de datos históricos y operativos.</li>
+                    <li>Eliminación de registros > 180 días.</li>
+                </ul>
+                <br />
+                <button class="btn" onclick="mostrarEstado('p3')">Ver Estado del Job</button>
+                <div id="p3" class="msg-box">✔ El Job mensual copia registros históricos, elimina antiguos y protege la información mediante transacciones.</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PROYECTO 4 -->
+        <!-- ============================================================ -->
+        <section class="project-section proyecto-4 fade" id="proyecto4">
+            <div class="project-header">
+                <span class="num">04</span>
+                <h2>SQL Server Alert Center</h2>
+                <span class="accent-line"></span>
+            </div>
+
+            <div class="card">
+                <h3>📋 Enunciado</h3>
+                <p>Crear un Alert que notifique cuando la base de datos genere errores de severidad <strong>≥ 17</strong> durante el registro de trámites. Incluye creación del operador, Alert y prueba.</p>
+            </div>
+
+            <div class="card">
+                <h3>💻 Script T‑SQL</h3>
+                <pre>
+                    EXEC msdb.dbo.sp_add_operator
+                        @name = 'DBA_ADMIN',
+                        @email_address = 'dba@empresa.com';
+                    GO
+
+                    EXEC msdb.dbo.sp_add_alert
+                        @name = 'ErrorCritico17',
+                        @severity = 17;
+                    GO
+
+                    EXEC msdb.dbo.sp_add_notification
+                        @alert_name = 'ErrorCritico17',
+                        @operator_name = 'DBA_ADMIN',
+                        @notification_method = 1;
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Flujo del Alert</h3>
+                <div class="flow-row">
+                    <span class="flow-step">Error SQL</span>
+                    <span class="flow-step">SQL Server</span>
+                    <span class="flow-step">Alert</span>
+                    <span class="flow-step">Operador</span>
+                    <span class="flow-step">Correo</span>
+                    <span class="flow-step">Fin</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>✅ Buenas Prácticas</h3>
+                <ul>
+                    <li>Operadores con correo configurado.</li>
+                    <li>Alertas automáticas para eventos críticos.</li>
+                    <li>Integración con SQL Server Agent.</li>
+                    <li>Monitoreo continuo y auditoría.</li>
+                    <li>Pruebas periódicas del Alert.</li>
+                </ul>
+                <br />
+                <button class="btn" onclick="simularError()">Simular Error</button>
+                <div id="p4" class="msg-box"></div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PROYECTO 5 -->
+        <!-- ============================================================ -->
+        <section class="project-section proyecto-5 fade" id="proyecto5">
+            <div class="project-header">
+                <span class="num">05</span>
+                <h2>Automatización con Database Mail</h2>
+                <span class="accent-line"></span>
+            </div>
+
+            <div class="card">
+                <h3>📋 Enunciado</h3>
+                <p>Crear un Job que diariamente identifique los trámites pendientes por más de 30 días, genere un reporte y lo envíe por correo utilizando <strong>Database Mail</strong>.</p>
+            </div>
+
+            <div class="card">
+                <h3>💻 Script T‑SQL</h3>
+                <pre>
+                    CREATE PROCEDURE sp_ReportePendientes
+                    AS
+                    BEGIN
+                        BEGIN TRY
+                            INSERT INTO AuditoriaReportes
+                            SELECT GETDATE(), COUNT(*)
+                            FROM Tramites
+                            WHERE DATEDIFF(DAY, FechaRegistro, GETDATE()) > 30;
+
+                            EXEC msdb.dbo.sp_send_dbmail
+                                @profile_name = 'PerfilMail',
+                                @recipients = 'admin@empresa.com',
+                                @subject = 'Reporte Diario',
+                                @body = 'Reporte generado correctamente';
+                        END TRY
+                        BEGIN CATCH
+                            PRINT ERROR_MESSAGE();
+                        END CATCH
+                    END;
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Flujo del Proceso</h3>
+                <div class="flow-row">
+                    <span class="flow-step">SQL Agent</span>
+                    <span class="flow-step">Buscar Pendientes</span>
+                    <span class="flow-step">Generar Reporte</span>
+                    <span class="flow-step">Database Mail</span>
+                    <span class="flow-step">Correo Enviado</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>✅ Buenas Prácticas</h3>
+                <ul>
+                    <li>Uso de procedimientos almacenados.</li>
+                    <li>TRY…CATCH para manejo de errores.</li>
+                    <li>Auditoría de ejecuciones.</li>
+                    <li>Automatización con SQL Server Agent.</li>
+                    <li>Uso de Database Mail para notificaciones.</li>
+                </ul>
+                <br />
+                <button class="btn" onclick="simularMail()">Enviar Reporte</button>
+                <div id="p5" class="msg-box"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="main-footer">
+        <p>SQL Server Agent · 5 Proyectos Integrados · <span>Automatización &amp; Monitoreo</span> · 2026</p>
+    </footer>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script>
+        // ---------- FUNCIONES PARA MOSTRAR ESTADOS ----------
+        function mostrarEstado(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('show');
+                // Ocultar después de 6 segundos
+                clearTimeout(el._timer);
+                el._timer = setTimeout(() => el.classList.remove('show'), 6000);
+            }
+        }
+
+        // ---------- SIMULAR ERROR (Proyecto 4) ----------
+        function simularError() {
+            const el = document.getElementById('p4');
+            if (!el) return;
+            el.classList.add('show');
+            el.innerHTML = '⚠ Detectando error de severidad 17...';
+            setTimeout(() => {
+                el.innerHTML = '📧 Notificando al operador DBA_ADMIN...';
+            }, 1500);
+            setTimeout(() => {
+                el.innerHTML = '✅ Alerta registrada y correo enviado correctamente.';
+            }, 3000);
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 7000);
+        }
+
+        // ---------- SIMULAR ENVÍO DE MAIL (Proyecto 5) ----------
+        function simularMail() {
+            const el = document.getElementById('p5');
+            if (!el) return;
+            el.classList.add('show');
+            el.innerHTML = '📊 Generando reporte...';
+            setTimeout(() => {
+                el.innerHTML = '📧 Enviando correo...';
+            }, 1500);
+            setTimeout(() => {
+                el.innerHTML = '✅ Reporte enviado correctamente.';
+            }, 3000);
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 7000);
+        }
+
+        // ---------- ANIMACIÓN FADE AL SCROLL ----------
+        const faders = document.querySelectorAll('.fade');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        faders.forEach(el => observer.observe(el));
+
+        // ---------- OPCIONAL: CERRAR MENSAJES AL HACER CLICK FUERA ----------
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.btn') && !e.target.closest('.msg-box')) {
+                document.querySelectorAll('.msg-box.show').forEach(el => {
+                    el.classList.remove('show');
+                    clearTimeout(el._timer);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

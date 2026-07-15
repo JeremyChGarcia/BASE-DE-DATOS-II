@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft SQL Azure - Resúmenes y Cuestionarios</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #1e2a3a;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #0078d4;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5b6f82;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        .tab-btn {
+            background: #e9edf2;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tab-btn:hover {
+            background: #d0d9e5;
+        }
+        .tab-btn.active {
+            background: #0078d4;
+            color: white;
+        }
+        .chapter-content {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .chapter-content.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .summary {
+            background: #f8faff;
+            border-left: 5px solid #0078d4;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        .summary h2 {
+            color: #0078d4;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+        .summary h3 {
+            margin-top: 15px;
+            color: #1e2a3a;
+            font-weight: 600;
+        }
+        .summary ul {
+            padding-left: 25px;
+        }
+        .summary li {
+            margin-bottom: 6px;
+        }
+        .quiz {
+            background: white;
+            border-radius: 12px;
+            padding: 5px 0;
+        }
+        .quiz h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1e2a3a;
+            border-bottom: 2px solid #e9edf2;
+            padding-bottom: 12px;
+        }
+        .question {
+            background: #fafcff;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            border: 1px solid #eef3f8;
+        }
+        .question p {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-left: 10px;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .options input[type="radio"] {
+            accent-color: #0078d4;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .correct-answer {
+            display: none;
+            margin-top: 10px;
+            color: #0a7e3d;
+            background: #e3f5e9;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .show-answers-btn {
+            display: block;
+            margin: 30px auto 10px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .show-answers-btn:hover {
+            background: #005a9e;
+            transform: scale(1.02);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7a8a9e;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 700px) {
+            .tabs { gap: 4px; }
+            .tab-btn { padding: 8px 12px; font-size: 0.8rem; }
+            .summary { padding: 15px; }
+            .question { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📘 Microsoft SQL Azure</h1>
+    <p class="subtitle">Administración y desarrollo en la nube — Resúmenes y cuestionarios por capítulo</p>
+
+    <div class="tabs" id="tabContainer">
+        <!-- Generado por JS -->
+    </div>
+
+    <div id="contentContainer">
+        <!-- Generado por JS -->
+    </div>
+
+    <div class="footer">Libro de María Pérez Marqués · Cuestionarios de 20 preguntas por capítulo</div>
+</div>
+
+<script>
+    // ===== DATOS =====
+    const chapters = [
+        { id: 1, label: 'Cap. 1' },
+        { id: 2, label: 'Cap. 2' },
+        { id: 3, label: 'Cap. 3' },
+        { id: 4, label: 'Cap. 4' },
+        { id: 5, label: 'Cap. 5' },
+        { id: 6, label: 'Cap. 6' },
+        { id: 7, label: 'Cap. 7' },
+        { id: 8, label: 'Cap. 8' },
+        { id: 9, label: 'Cap. 9' }
+    ];
+
+    // Resúmenes (extraídos del contenido del libro)
+    const summaries = {
+        1: `<h2>📌 Capítulo 1: Conceptos de base de datos de SQL Azure</h2>
+            <p>Este capítulo introduce Microsoft SQL Azure como un servicio de base de datos relacional en la nube basado en SQL Server. Se destacan:</p>
+            <ul>
+                <li><strong>Portal de administración:</strong> nuevo portal con herramienta web para diseñar tablas, vistas, procedimientos y ejecutar consultas.</li>
+                <li><strong>Similitudes y diferencias:</strong> SQL Azure usa TDS y Transact-SQL, pero la administración física es automática (Microsoft gestiona hardware, replicación, conmutación por error). El DBA administra lógica (esquemas, seguridad, índices).</li>
+                <li><strong>Arquitectura:</strong> niveles: cliente (aplicaciones locales o en Windows Azure), servicios (aprovisionamiento, facturación, enrutamiento), plataforma (servidores físicos con SQL Server y tejido de SQL Azure) e infraestructura (hardware).</li>
+                <li><strong>Modelo de aprovisionamiento:</strong> cuenta Windows Azure → suscripción → servidores SQL Azure (hasta 6 por suscripción, 150 bases de datos por servidor). Cada servidor tiene una base de datos <em>master</em> de solo lectura y inicios de sesión.</li>
+                <li><strong>Facturación:</strong> dos ediciones: Web (1 o 5 GB) y Business (10-50 GB). Se cobra mensualmente según el tamaño máximo alcanzado diariamente. El ancho de banda dentro de la misma región es gratuito.</li>
+                <li><strong>MAXSIZE:</strong> limita el crecimiento; si se alcanza, se rechazan inserciones hasta liberar espacio o aumentar el límite.</li>
+            </ul>
+            <p>En resumen, SQL Azure ofrece una base de datos administrada, escalable y familiar para desarrolladores de SQL Server, con diferencias clave en administración física y disponibilidad.</p>`,
+
+        2: `<h2>📌 Capítulo 2: Administrar bases de datos e inicios de sesión en SQL Azure</h2>
+            <p>Se enfoca en la administración de seguridad y migración de bases de datos.</p>
+            <ul>
+                <li><strong>Seguridad:</strong> la autenticación es solo SQL (no Windows). Los roles <code>loginmanager</code> y <code>dbmanager</code> en la base de datos <em>master</em> controlan la creación de inicios de sesión y bases de datos.</li>
+                <li><strong>Inicios de sesión:</strong> se crean con <code>CREATE LOGIN</code> en <em>master</em>. Para dar acceso a una base de datos, se crea un usuario con <code>CREATE USER</code>.</li>
+                <li><strong>Permisos:</strong> se pueden asignar roles de servidor (loginmanager, dbmanager) y roles de base de datos (db_owner, etc.).</li>
+                <li><strong>Migración:</strong> se puede migrar una base de datos existente generando scripts con el Asistente para generar scripts (configurando opciones para SQL Azure) y ejecutándolos en la nube. También se mencionan otras herramientas: Sync Framework 2.1, Asistente de migración de SQL Azure.</li>
+                <li><strong>Ejemplo:</strong> se incluye el script completo de la base de datos <em>School</em> (tablas, relaciones, procedimientos y datos) para practicar la migración.</li>
+                <li><strong>Mover datos:</strong> se puede usar SQL Server Integration Services (SSIS) o la utilidad <code>bcp</code>.</li>
+            </ul>
+            <p>La administración se realiza principalmente a través de la base de datos <em>master</em>, y la migración requiere adaptar el script a las características admitidas.</p>`,
+
+        3: `<h2>📌 Capítulo 3: Copiar bases de datos y supervisar SQL Azure</h2>
+            <p>Este capítulo cubre la copia de bases de datos como mecanismo de respaldo y la supervisión mediante vistas de administración dinámica (DMV).</p>
+            <ul>
+                <li><strong>Copia de bases de datos:</strong> se usa <code>CREATE DATABASE ... AS COPY OF</code> para crear una copia (misma edición y tamaño). Puede ser en el mismo servidor o entre servidores (misma región).</li>
+                <li><strong>Proceso asíncrono:</strong> la copia se realiza en segundo plano; se supervisa con <code>sys.dm_database_copies</code> y <code>sys.databases</code> (estado <em>COPYING</em> o <em>ONLINE</em>).</li>
+                <li><strong>Permisos:</strong> el inicio de sesión debe ser el propietario (DBO) de la base de datos origen y tener el rol <code>dbmanager</code> en el servidor destino. Además, debe tener el mismo nombre y contraseña en ambos servidores.</li>
+                <li><strong>Supervisión con DMV:</strong> se pueden calcular tamaños (<code>sys.dm_db_partition_stats</code>), ver conexiones (<code>sys.dm_exec_sessions</code>, <code>sys.dm_exec_connections</code>), rendimiento de consultas (<code>sys.dm_exec_query_stats</code>), consultas bloqueadas (<code>sys.dm_tran_locks</code>) y planes de consulta.</li>
+                <li><strong>Firewall:</strong> se configura mediante el portal o con procedimientos <code>sp_set_firewall_rule</code> y <code>sp_delete_firewall_rule</code> en <em>master</em>. Permite accesos desde Internet (rangos IP) y desde Windows Azure (IP 0.0.0.0).</li>
+                <li><strong>Solución de problemas:</strong> errores de inicio de sesión, servicio no disponible, desconexiones por inactividad (30 min) o uso excesivo de recursos.</li>
+            </ul>
+            <p>La copia de bases de datos es una herramienta clave para respaldos y pruebas, mientras que las DMV permiten una monitorización detallada del rendimiento.</p>`,
+
+        4: `<h2>📌 Capítulo 4: Desarrollo</h2>
+            <p>Describe el desarrollo de aplicaciones para SQL Azure, las herramientas compatibles y las limitaciones de Transact-SQL.</p>
+            <ul>
+                <li><strong>Creación de servidores y bases de datos:</strong> mediante el portal o comandos <code>CREATE DATABASE</code> (con <em>edition</em> y <em>MAXSIZE</em>).</li>
+                <li><strong>Compatibilidad de Transact-SQL:</strong> se admiten la mayoría de las instrucciones DML y DDL, pero no todas. No se admiten: CLR, Service Broker, Replication, copias de seguridad/restauración, tablas temporales globales, etc.</li>
+                <li><strong>Herramientas compatibles:</strong> SQL Server Management Studio (2008 R2 o superior), <code>sqlcmd</code>, Asistente para generar scripts, DAC (aplicaciones de capa de datos), SSIS, <code>bcp</code>, SMO (parcial), SSMA, Access, PowerPivot.</li>
+                <li><strong>Controladores y bibliotecas:</strong> ADO.NET, Entity Framework, ODBC (Native Client), PHP, JDBC.</li>
+                <li><strong>Limitaciones generales:</strong> puerto TCP 1433, conexiones cifradas (SSL), autenticación SQL, sin <code>USE</code>, necesidad de índices clúster en todas las tablas, límite de 150 bases de datos por servidor, nombres prohibidos (admin, root, etc.).</li>
+                <li><strong>Seguridad:</strong> firewall, cifrado y validación de certificados (<code>Encrypt=True; TrustServerCertificate=False</code>), autenticación solo SQL.</li>
+            </ul>
+            <p>El desarrollo en SQL Azure es similar a SQL Server, pero con restricciones específicas que deben tenerse en cuenta, especialmente en Transact-SQL y en la administración de índices.</p>`,
+
+        5: `<h2>📌 Capítulo 5: Conectar con SQL Azure</h2>
+            <p>Se explican las distintas formas de conectarse a SQL Azure desde diversas plataformas y lenguajes.</p>
+            <ul>
+                <li><strong>Consideraciones generales:</strong> puerto 1433, firewall, usar <code>login@server</code> en el nombre de usuario, no soporte para <code>USE</code>, autenticación SQL, conexiones cifradas, transacciones distribuidas no admitidas.</li>
+                <li><strong>Conexión con sqlcmd:</strong> usar el formato <code>login@server</code> y conectar a la base de datos <em>master</em> o a la base de datos destino.</li>
+                <li><strong>Conexión con ADO.NET:</strong> usar <code>SqlConnectionStringBuilder</code> con <code>Encrypt=True</code> y <code>TrustServerCertificate=False</code>. Ejemplo completo de aplicación de consola que crea una base de datos, tabla y realiza operaciones DML.</li>
+                <li><strong>Conexión con ASP.NET:</strong> usar <code>SqlDataSource</code> con la cadena de conexión adecuada y enlazar a controles como <code>GridView</code>.</li>
+                <li><strong>Conexión con WCF Data Services:</strong> crear un modelo de datos (EDM), un servicio de datos (WCF) y una aplicación cliente que consuma el servicio.</li>
+                <li><strong>Conexión con PHP:</strong> usar el Controlador de SQL Server para PHP, configurar FastCGI en Windows Azure y ejecutar consultas con <code>sqlsrv_connect</code>.</li>
+                <li><strong>Conexión con JDBC:</strong> usar el controlador JDBC 3.0, conectar con <code>DriverManager.getConnection</code> y ejecutar consultas.</li>
+                <li><strong>Conexión con ADO.NET Entity Framework:</strong> crear un modelo EDM desde la base de datos, consultar con LINQ y migrar la aplicación a SQL Azure cambiando la cadena de conexión.</li>
+            </ul>
+            <p>El capítulo proporciona ejemplos prácticos para cada método, mostrando la versatilidad de SQL Azure para integrarse con múltiples entornos de desarrollo.</p>`,
+
+        6: `<h2>📌 Capítulo 6: TRANSACT-SQL en SQL Azure. Tipos de datos, funciones y operadores</h2>
+            <p>Este capítulo detalla los tipos de datos, funciones y operadores compatibles en SQL Azure.</p>
+            <ul>
+                <li><strong>Tipos de datos:</strong> se admiten numéricos exactos (int, decimal, money...), aproximados (float, real), fecha/hora (date, datetime2...), cadenas (char, varchar, nchar, nvarchar...), binarios (binary, varbinary), espaciales (geography, geometry) y otros (cursor, hierarchyid, xml, timestamp, uniqueidentifier).</li>
+                <li><strong>Métodos para tipos espaciales:</strong> se listan métodos OGC y extendidos para <code>geography</code> y <code>geometry</code> (STArea, STDistance, STBuffer, etc.).</li>
+                <li><strong>Métodos para hierarchyid:</strong> GetAncestor, GetDescendant, GetLevel, etc.</li>
+                <li><strong>Tipo xml:</strong> se admiten métodos <code>query()</code>, <code>value()</code>, <code>exist()</code>, <code>modify()</code>, <code>nodes()</code> y las operaciones DML XML (<code>insert</code>, <code>delete</code>, <code>replace value of</code>).</li>
+                <li><strong>Funciones:</strong> se cubren funciones de agregado (AVG, COUNT, SUM...), de categoría (RANK, NTILE...), escalares (configuración, fecha/hora, matemáticas, metadatos, seguridad, cadenas, sistema) y escalares de ODBC.</li>
+                <li><strong>Operadores:</strong> aritméticos (+, -, *, /, %), compuestos (+=, -=, ...), bit a bit (&, |, ^), lógicos (AND, OR, NOT, BETWEEN, LIKE...), de comparación (=, >, <, >=, <=, <>), unarios (+, -, ~) y misceláneos (concatenación, asignación).</li>
+                <li><strong>Tablas y vistas del sistema:</strong> SQL Azure no admite tablas del sistema; en su lugar, ofrece vistas como <code>sys.bandwidth_usage</code>, <code>sys.dm_database_copies</code>, <code>sys.firewall_rules</code>, y vistas de catálogo, compatibilidad y DMV parciales.</li>
+            </ul>
+            <p>La compatibilidad es amplia, pero se deben consultar las listas específicas para asegurar que el código Transact-SQL funciona correctamente en la nube.</p>`,
+
+        7: `<h2>📌 Capítulo 7: TRANSACT-SQL en SQL Azure. Instrucciones SQL Server admitidas y procedimientos</h2>
+            <p>Se listan las instrucciones Transact-SQL admitidas, las no admitidas, y los procedimientos almacenados del sistema disponibles.</p>
+            <ul>
+                <li><strong>Instrucciones admitidas:</strong> ALTER ROLE, CREATE TABLE, DELETE, INSERT, SELECT, UPDATE, etc. Se incluyen las sugerencias de consulta (excepto MAXDOP y PAGLOCK).</li>
+                <li><strong>Instrucciones SET:</strong> se admiten las relacionadas con fecha/hora, bloqueo, ejecución, ISO, estadísticas y transacciones (SET DATEFIRST, SET LOCK_TIMEOUT, SET NOCOUNT, SET TRANSACTION ISOLATION LEVEL, etc.).</li>
+                <li><strong>Instrucciones no admitidas:</strong> BACKUP, RESTORE, CREATE/ALTER/DROP para objetos no soportados (ensamblados, claves asimétricas, certificados, extremos, etc.), consultas distribuidas, transacciones distribuidas, Service Broker, etc.</li>
+                <li><strong>Procedimientos almacenados del sistema:</strong>
+                    <ul>
+                        <li><strong>Específicos de SQL Azure:</strong> <code>sp_set_firewall_rule</code> y <code>sp_delete_firewall_rule</code>.</li>
+                        <li><strong>Catálogo:</strong> <code>sp_columns</code>, <code>sp_tables</code>, <code>sp_stored_procedures</code>, etc.</li>
+                        <li><strong>Motor de base de datos:</strong> <code>sp_executesql</code>, <code>sp_help</code>, <code>sp_helptext</code>, <code>sp_updatestats</code>, etc.</li>
+                        <li><strong>Seguridad:</strong> <code>sp_addrolemember</code>, <code>sp_droprolemember</code>, <code>sp_helprole</code>.</li>
+                    </ul>
+                </li>
+                <li><strong>Errores y excepciones:</strong> se proporcionan tablas con códigos de error comunes (4001, 40501, 40544, etc.), errores de copia de base de datos, pérdida de conexión y limitación (throttling) con descodificación de códigos de motivo.</li>
+                <li><strong>Excepciones de SMO:</strong> se listan mensajes de error típicos al usar SMO con SQL Azure.</li>
+            </ul>
+            <p>Este capítulo es una referencia esencial para conocer qué se puede y qué no se puede hacer en Transact-SQL dentro de SQL Azure.</p>`,
+
+        8: `<h2>📌 Capítulo 8: TRANSACT-SQL en SQL Azure. Lenguaje de definición de datos DDL</h2>
+            <p>Profundiza en las instrucciones DDL (ALTER, CREATE, DROP) y sus variantes en SQL Azure.</p>
+            <ul>
+                <li><strong>Instrucciones ALTER:</strong>
+                    <ul>
+                        <li><code>ALTER AUTHORIZATION</code>: cambia el propietario de un objeto (solo para OBJECT, TYPE, ROLE, SCHEMA).</li>
+                        <li><code>ALTER DATABASE</code>: modifica nombre, edición (Web/Business) y MAXSIZE (1,5,10,20,30,40,50 GB). No admite COLLATE, opciones de archivo, etc.</li>
+                        <li><code>ALTER FUNCTION</code>: modifica funciones escalares y con valores de tabla (no CLR).</li>
+                        <li><code>ALTER INDEX</code>: permite REBUILD, DISABLE, SET opciones (IGNORE_DUP_KEY, STATISTICS_NORECOMPUTE, ONLINE). No admite particiones, compresión, etc.</li>
+                        <li><code>ALTER LOGIN</code>: cambia contraseña, nombre o habilita/deshabilita el inicio de sesión.</li>
+                        <li><code>ALTER PROCEDURE</code>: modifica procedimientos (sin ENCRYPTION ni FOR REPLICATION).</li>
+                        <li><code>ALTER TABLE</code>: agrega/quita columnas, restricciones, habilita/deshabilita triggers. No admite columnas SPARSE, FILESTREAM, particiones.</li>
+                        <li><code>ALTER TRIGGER</code>: modifica triggers DML y DDL (no triggers de inicio de sesión).</li>
+                        <li><code>ALTER USER</code>: cambia nombre, esquema predeterminado o LOGIN asociado.</li>
+                        <li><code>ALTER VIEW</code>: modifica vistas (sin ENCRYPTION).</li>
+                    </ul>
+                </li>
+                <li><strong>Instrucciones CREATE:</strong>
+                    <ul>
+                        <li><code>CREATE DATABASE</code>: con EDITION y MAXSIZE, y opción AS COPY OF para copiar bases de datos.</li>
+                        <li><code>CREATE FUNCTION</code>: similar a ALTER FUNCTION.</li>
+                        <li><code>CREATE INDEX</code>: índices clúster y no clúster, incluye filtrados y opciones básicas.</li>
+                        <li><code>CREATE LOGIN</code>: solo con PASSWORD.</li>
+                        <li><code>CREATE PROCEDURE</code>: sin ENCRYPTION ni FOR REPLICATION.</li>
+                        <li><code>CREATE SPATIAL INDEX</code>: índices espaciales con teselación GEOMETRY_GRID o GEOGRAPHY_GRID.</li>
+                        <li><code>CREATE SYNONYM</code>, <code>CREATE TABLE</code> (requiere índice clúster), <code>CREATE TRIGGER</code>, <code>CREATE TYPE</code>, <code>CREATE USER</code> (con LOGIN o WITHOUT LOGIN), <code>CREATE VIEW</code>.</li>
+                    </ul>
+                </li>
+                <li><strong>Instrucciones DROP:</strong> <code>DROP DATABASE</code>, <code>DROP INDEX</code>, <code>DROP TABLE</code>, <code>DROP TRIGGER</code> (con sus limitaciones).</li>
+            </ul>
+            <p>El capítulo detalla minuciosamente cada comando DDL, indicando qué parámetros son válidos y cuáles no, lo que es crucial para la administración de esquemas en SQL Azure.</p>`,
+
+        9: `<h2>📌 Capítulo 9: TRANSACT-SQL en SQL Azure. Lenguajes de manipulación y control de datos DML y DCL</h2>
+            <p>Se centra en las instrucciones DML (INSERT, UPDATE, DELETE) y DCL (GRANT, REVOKE, DENY), así como otras instrucciones de control.</p>
+            <ul>
+                <li><strong>INSERT:</strong> se admite con las mismas sintaxis que en SQL Server, pero no permite nombres de tres o cuatro partes ni OPENQUERY/OPENROWSET. También se incluye la cláusula OUTPUT.</li>
+                <li><strong>DCL (GRANT, REVOKE, DENY):</strong> se pueden conceder/revocar/denegar permisos a nivel de base de datos, sobre entidades de seguridad (usuarios, roles) y sobre tipos. No se admiten permisos para roles de aplicación, usuarios mapeados a certificados o claves asimétricas, ni usuarios de Windows.</li>
+                <li><strong>EXECUTE y EXECUTE AS:</strong> se pueden ejecutar procedimientos y funciones, con la opción <code>AS USER</code> pero no <code>AS LOGIN</code>. La cláusula <code>EXECUTE AS</code> en módulos admite CALLER, SELF, OWNER o 'user_name'.</li>
+                <li><strong>ENABLE/DISABLE TRIGGER:</strong> permiten habilitar o deshabilitar triggers (DML o DDL). No se admite <code>ALL SERVER</code>.</li>
+                <li><strong>USE:</strong> en SQL Azure, la instrucción USE solo permite la base de datos actual; no cambia de base de datos. Para cambiar se debe establecer una nueva conexión.</li>
+                <li><strong>Lenguaje TCL:</strong> BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVE TRANSACTION son totalmente compatibles.</li>
+            </ul>
+            <p>Las instrucciones DML y DCL son muy similares a las de SQL Server, con restricciones menores, y constituyen la base para la manipulación de datos y la gestión de permisos en la nube.</p>`
+    };
+
+    // Cuestionarios (20 preguntas por capítulo)
+    const quizzes = {
+        1: [
+            { q: '¿Qué tipo de autenticación utiliza SQL Azure?', o: ['Windows', 'SQL Server', 'Ambas', 'Ninguna'], a: 1 },
+            { q: '¿Cuál es el puerto TCP por defecto para SQL Azure?', o: ['1433', '3306', '8080', '5432'], a: 0 },
+            { q: '¿Qué edición de SQL Azure permite un tamaño máximo de 5 GB?', o: ['Business', 'Web', 'Enterprise', 'Standard'], a: 1 },
+            { q: '¿Cuántas bases de datos (incluyendo master) puede tener un servidor SQL Azure por defecto?', o: ['50', '100', '150', '200'], a: 2 },
+            { q: '¿Qué comando se usa para limitar el tamaño de una base de datos?', o: ['LIMIT', 'MAXSIZE', 'MAXSIZE en CREATE DATABASE', 'TAMANO'], a: 2 },
+            { q: '¿Qué vista muestra el uso de ancho de banda?', o: ['sys.bandwidth_usage', 'sys.database_usage', 'sys.dm_bandwidth', 'sys.usage'], a: 0 },
+            { q: '¿Cuál de los siguientes NO es un nivel de la arquitectura de SQL Azure?', o: ['Cliente', 'Servicios', 'Aplicación', 'Infraestructura'], a: 2 },
+            { q: '¿Qué rol permite crear inicios de sesión en SQL Azure?', o: ['dbmanager', 'loginmanager', 'securityadmin', 'dbcreator'], a: 1 },
+            { q: '¿Qué opción de firewall habilita el acceso desde Windows Azure?', o: ['IP 0.0.0.0', 'IP 127.0.0.1', 'IP 192.168.1.1', 'IP 10.0.0.0'], a: 0 },
+            { q: '¿Qué sucede si una base de datos alcanza MAXSIZE?', o: ['Se eliminan datos automáticamente', 'Se rechazan inserciones', 'Se convierte a Business Edition', 'Se duplica el tamaño'], a: 1 },
+            { q: '¿Qué vista muestra el número y tipo de bases de datos?', o: ['sys.databases', 'sys.database_usage', 'sys.dm_database_usage', 'sys.db_usage'], a: 1 },
+            { q: '¿Qué característica NO está disponible en SQL Azure?', o: ['Copias de seguridad automáticas', 'Replicación', 'Alta disponibilidad', 'Escalabilidad'], a: 1 },
+            { q: '¿Cuántos servidores SQL Azure se pueden crear por suscripción (por defecto)?', o: ['3', '6', '10', 'Ilimitados'], a: 1 },
+            { q: '¿Qué tipo de datos NO admite SQL Azure?', o: ['int', 'varchar', 'image', 'xml'], a: 2 },
+            { q: '¿Qué comando se usa para copiar una base de datos en SQL Azure?', o: ['COPY DATABASE', 'BACKUP DATABASE', 'CREATE DATABASE ... AS COPY OF', 'RESTORE DATABASE'], a: 2 },
+            { q: '¿Qué nivel de la arquitectura se encarga del aprovisionamiento?', o: ['Cliente', 'Servicios', 'Plataforma', 'Infraestructura'], a: 1 },
+            { q: '¿Qué opción de cadena de conexión garantiza cifrado SSL?', o: ['Encrypt=False', 'Encrypt=True', 'TrustServerCertificate=True', 'Security=SSL'], a: 1 },
+            { q: '¿Qué vista de catálogo muestra los inicios de sesión?', o: ['sys.sql_logins', 'sys.logins', 'sys.server_principals', 'sys.users'], a: 0 },
+            { q: '¿Qué tipo de intercalación se usa por defecto en SQL Azure?', o: ['SQL_LATIN1_GENERAL_CP1_CI_AS', 'Latin1_General_CS_AS', 'SQL_Latin1_General_CP1251_CI_AS', 'English_United_States'], a: 0 },
+            { q: '¿Cuál es la función principal del tejido de SQL Azure?', o: ['Aprovisionamiento', 'Facturación', 'Replicación y conmutación por error', 'Autenticación'], a: 2 }
+        ],
+        2: [
+            { q: '¿Dónde se administran los inicios de sesión en SQL Azure?', o: ['Base de datos master', 'Cada base de datos', 'Portal de administración', 'Active Directory'], a: 0 },
+            { q: '¿Qué rol permite crear bases de datos?', o: ['dbmanager', 'loginmanager', 'dbcreator', 'securityadmin'], a: 0 },
+            { q: '¿Qué comando crea un usuario en una base de datos?', o: ['CREATE USER', 'CREATE LOGIN', 'ADD USER', 'NEW USER'], a: 0 },
+            { q: '¿Qué herramienta se recomienda para migrar una base de datos local a SQL Azure?', o: ['Asistente para generar scripts', 'SQL Profiler', 'Database Tuning Advisor', 'Replication Wizard'], a: 0 },
+            { q: '¿Qué opción de scripting es necesaria para SQL Azure?', o: ['Script para SQL Server 2008', 'Script para SQL Azure', 'Script para Windows Azure', 'Script para SQL Server 2012'], a: 1 },
+            { q: '¿Qué vista muestra todas las bases de datos del servidor?', o: ['sys.databases', 'sys.database_usage', 'sys.master_files', 'sys.sysdatabases'], a: 0 },
+            { q: '¿Qué utilidad se usa para copias masivas de datos?', o: ['bcp', 'sqlcmd', 'SSMS', 'osql'], a: 0 },
+            { q: '¿Se puede usar autenticación de Windows en SQL Azure?', o: ['Sí', 'No', 'Solo con Active Directory', 'Solo en modo híbrido'], a: 1 },
+            { q: '¿Qué procedimiento almacenado agrega un miembro a un rol de servidor?', o: ['sp_addrolemember', 'sp_addserverrole', 'sp_addsrvrolemember', 'sp_addrole'], a: 0 },
+            { q: '¿Qué se debe hacer antes de ejecutar DROP DATABASE?', o: ['Conectarse a la base de datos', 'Conectarse a master', 'Detener el servicio', 'Hacer backup'], a: 1 },
+            { q: '¿Qué característica de SQL Server no es compatible con SQL Azure?', o: ['Procedimientos almacenados', 'Vistas', 'Índices clúster', 'Replicación'], a: 3 },
+            { q: '¿Qué comando se usa para cambiar la contraseña de un inicio de sesión?', o: ['ALTER LOGIN', 'CHANGE PASSWORD', 'ALTER USER', 'SET PASSWORD'], a: 0 },
+            { q: '¿Qué tipo de autenticación se utiliza en SQL Azure?', o: ['Solo SQL', 'Solo Windows', 'Ambas', 'OAuth'], a: 0 },
+            { q: '¿Qué opción del Asistente para scripts convierte UDDTs en tipos base?', o: ['Convertir UDDTs en tipos base', 'Mantener UDDTs', 'Eliminar UDDTs', 'No aplica'], a: 0 },
+            { q: '¿Qué herramienta de Microsoft permite sincronizar datos entre SQL Server y SQL Azure?', o: ['Sync Framework', 'SSIS', 'bcp', 'Data Migration Assistant'], a: 0 },
+            { q: '¿Qué vista de catálogo muestra los usuarios de la base de datos?', o: ['sys.database_principals', 'sys.sql_logins', 'sys.server_principals', 'sys.users'], a: 0 },
+            { q: '¿Cuál es el tamaño máximo de una base de datos Business Edition?', o: ['50 GB', '10 GB', '30 GB', 'Ilimitado'], a: 0 },
+            { q: '¿Qué comando se usa para crear un inicio de sesión en SQL Azure?', o: ['CREATE LOGIN', 'CREATE USER', 'ADD LOGIN', 'NEW LOGIN'], a: 0 },
+            { q: '¿Qué opción de cadena de conexión es obligatoria para conectarse a SQL Azure?', o: ['Trusted_Connection=True', 'Integrated Security=True', 'Encrypt=True', 'User ID=sa'], a: 2 },
+            { q: '¿Qué procedimiento almacenado muestra las reglas de firewall?', o: ['sys.firewall_rules', 'sp_firewall_rules', 'sp_get_firewall_rule', 'firewall_rules'], a: 0 }
+        ],
+        3: [
+            { q: '¿Qué comando inicia la copia de una base de datos en SQL Azure?', o: ['CREATE DATABASE ... AS COPY OF', 'COPY DATABASE', 'BACKUP DATABASE', 'RESTORE DATABASE'], a: 0 },
+            { q: '¿Qué estado muestra sys.databases mientras la copia está en curso?', o: ['COPYING', 'ONLINE', 'RESTORING', 'OFFLINE'], a: 0 },
+            { q: '¿Qué vista permite supervisar el progreso de la copia?', o: ['sys.dm_database_copies', 'sys.dm_copy_status', 'sys.database_copy', 'sys.dm_db_copy'], a: 0 },
+            { q: '¿Qué permiso se necesita para consultar una DMV en SQL Azure?', o: ['VIEW DATABASE STATE', 'VIEW SERVER STATE', 'SELECT', 'CONTROL'], a: 0 },
+            { q: '¿Qué comando detiene la copia de una base de datos?', o: ['DROP DATABASE sobre la destino', 'STOP COPY', 'CANCEL DATABASE', 'ALTER DATABASE STOP'], a: 0 },
+            { q: '¿Qué vista muestra el tamaño de la base de datos?', o: ['sys.dm_db_partition_stats', 'sys.database_size', 'sys.dm_db_size', 'sys.size'], a: 0 },
+            { q: '¿Qué vista muestra las conexiones activas?', o: ['sys.dm_exec_sessions', 'sys.dm_exec_connections', 'sys.sessions', 'sys.connections'], a: 0 },
+            { q: '¿Qué vista muestra las consultas en ejecución?', o: ['sys.dm_exec_requests', 'sys.dm_exec_query', 'sys.dm_requests', 'sys.queries'], a: 0 },
+            { q: '¿Qué procedimiento almacenado agrega una regla de firewall?', o: ['sp_set_firewall_rule', 'sp_add_firewall_rule', 'sp_firewall_rule', 'sp_create_firewall'], a: 0 },
+            { q: '¿Qué dirección IP habilita conexiones desde Windows Azure?', o: ['0.0.0.0', '127.0.0.1', '255.255.255.255', '192.168.1.1'], a: 0 },
+            { q: '¿Cuánto tiempo puede estar inactiva una sesión antes de ser desconectada?', o: ['10 minutos', '30 minutos', '1 hora', 'No hay límite'], a: 1 },
+            { q: '¿Qué vista muestra los bloqueos actuales?', o: ['sys.dm_tran_locks', 'sys.dm_locks', 'sys.tran_locks', 'sys.locks'], a: 0 },
+            { q: '¿Qué vista muestra los planes de consulta en caché?', o: ['sys.dm_exec_query_stats', 'sys.dm_exec_cached_plans', 'sys.dm_query_plans', 'sys.plan_cache'], a: 1 },
+            { q: '¿Qué función tiene sp_set_firewall_rule?', o: ['Agregar regla de firewall', 'Eliminar regla de firewall', 'Ver reglas de firewall', 'Modificar regla de firewall'], a: 0 },
+            { q: '¿Qué sucede si se ejecuta DROP DATABASE en la base de datos destino durante una copia?', o: ['Se cancela la copia', 'La copia continúa', 'Se detiene el servidor', 'No pasa nada'], a: 0 },
+            { q: '¿Qué vista muestra el porcentaje de copia completado?', o: ['sys.dm_database_copies', 'sys.database_copy', 'sys.dm_copy_progress', 'sys.copy_status'], a: 0 },
+            { q: '¿Qué tipo de coherencia tiene la base de datos destino al finalizar la copia?', o: ['Transaccional', 'Eventual', 'No consistente', 'Solo esquema'], a: 0 },
+            { q: '¿Qué se debe verificar antes de copiar entre servidores?', o: ['Mismo inicio de sesión y contraseña', 'Misma región', 'Ambos servidores en la misma suscripción', 'Misma edición'], a: 0 },
+            { q: '¿Qué comando permite cambiar el propietario de una base de datos?', o: ['ALTER AUTHORIZATION', 'ALTER DATABASE', 'ALTER USER', 'CHANGE OWNER'], a: 0 },
+            { q: '¿Qué error se produce cuando la base de datos alcanza su tamaño máximo?', o: ['40544', '40501', '40197', '40613'], a: 0 }
+        ],
+        4: [
+            { q: '¿Qué característica de SQL Server no está disponible en SQL Azure?', o: ['Service Broker', 'Índices', 'Procedimientos almacenados', 'Vistas'], a: 0 },
+            { q: '¿Qué herramienta de administración basada en web se usa para SQL Azure?', o: ['Database Manager for SQL Azure', 'SSMS', 'Azure Portal', 'SQL Server Web Admin'], a: 0 },
+            { q: '¿Qué controlador NO es compatible con SQL Azure?', o: ['OLE DB', 'ADO.NET', 'ODBC', 'JDBC'], a: 0 },
+            { q: '¿Qué versión de .NET Framework es necesaria para usar ADO.NET con SQL Azure?', o: ['3.5 SP1 o superior', '4.0', '2.0', '1.1'], a: 0 },
+            { q: '¿Qué tipo de tablas no se admiten en SQL Azure?', o: ['Tablas sin índice clúster', 'Tablas con índice clúster', 'Tablas temporales', 'Tablas con particiones'], a: 0 },
+            { q: '¿Qué límite de bases de datos por servidor tiene SQL Azure por defecto?', o: ['150', '100', '200', 'Ilimitado'], a: 0 },
+            { q: '¿Qué nombre de usuario está prohibido en SQL Azure?', o: ['admin', 'user', 'dbo', 'guest'], a: 0 },
+            { q: '¿Qué opción de seguridad es obligatoria en la cadena de conexión?', o: ['Encrypt=True', 'Trusted_Connection=True', 'Integrated Security=True', 'Persist Security Info=True'], a: 0 },
+            { q: '¿Qué herramienta permite migrar bases de datos Access a SQL Azure?', o: ['SSMA', 'DAC', 'Sync Framework', 'bcp'], a: 0 },
+            { q: '¿Qué funcionalidad de SQL Server Reporting Services es compatible con SQL Azure?', o: ['Uso como origen de datos', 'Desplegar informes en Azure', 'Report Builder', 'Todas'], a: 0 },
+            { q: '¿Qué versión de SQL Server Management Studio es necesaria para SQL Azure?', o: ['2008 R2 o superior', '2008', '2012', '2005'], a: 0 },
+            { q: '¿Qué característica de seguridad NO está disponible en SQL Azure?', o: ['Cifrado de datos transparente', 'Firewall', 'Autenticación SQL', 'Roles de base de datos'], a: 0 },
+            { q: '¿Qué opción de ALTER DATABASE no se admite en SQL Azure?', o: ['COLLATE', 'MODIFY NAME', 'EDITION', 'MAXSIZE'], a: 0 },
+            { q: '¿Qué comando no se admite en SQL Azure?', o: ['RESTORE DATABASE', 'CREATE TABLE', 'ALTER LOGIN', 'GRANT'], a: 0 },
+            { q: '¿Qué controlador ODBC se recomienda para SQL Azure?', o: ['SQL Server Native Client 10.0', 'SQL Server ODBC 8.0', 'ODBC for Azure', 'Any'], a: 0 },
+            { q: '¿Qué vista muestra el uso de la base de datos?', o: ['sys.database_usage', 'sys.bandwidth_usage', 'sys.dm_db_usage', 'sys.usage_stats'], a: 0 },
+            { q: '¿Qué tipo de datos espaciales se admiten?', o: ['geography y geometry', 'Solo geography', 'Solo geometry', 'Ninguno'], a: 0 },
+            { q: '¿Qué nivel de aislamiento está habilitado por defecto?', o: ['READ_COMMITTED_SNAPSHOT', 'READ UNCOMMITTED', 'SERIALIZABLE', 'REPEATABLE READ'], a: 0 },
+            { q: '¿Qué característica de SQL Server 2008 no se admite?', o: ['Compresión de datos', 'Índices espaciales', 'XML', 'GEOGRAPHY'], a: 0 },
+            { q: '¿Qué se necesita para usar la API REST de administración de SQL Azure?', o: ['Certificado', 'Token OAuth', 'Usuario y contraseña', 'Clave API'], a: 0 }
+        ],
+        5: [
+            { q: '¿Qué formato de nombre de usuario se usa en la cadena de conexión para SQL Azure?', o: ['login@server', 'server\\login', 'login', 'server/login'], a: 0 },
+            { q: '¿Qué comando de Transact-SQL no se admite para cambiar de base de datos?', o: ['USE', 'CONNECT', 'OPEN DATABASE', 'SET DATABASE'], a: 0 },
+            { q: '¿Qué opción de sqlcmd valida el certificado del servidor?', o: ['-N (sin -C)', '-C', '-E', '-U'], a: 0 },
+            { q: '¿Qué clase de .NET se usa para construir la cadena de conexión?', o: ['SqlConnectionStringBuilder', 'ConnectionStringBuilder', 'SqlConnection', 'DbConnectionStringBuilder'], a: 0 },
+            { q: '¿Qué propiedad de SqlConnectionStringBuilder habilita el cifrado?', o: ['Encrypt', 'TrustServerCertificate', 'IntegratedSecurity', 'PersistSecurityInfo'], a: 0 },
+            { q: '¿Qué controlador se usa para conectar PHP con SQL Azure?', o: ['SQL Server Driver for PHP', 'PDO_SQLSRV', 'MySQLi', 'ODBC'], a: 0 },
+            { q: '¿Qué versión del controlador JDBC es compatible con SQL Azure?', o: ['3.0', '2.0', '1.0', '4.0'], a: 0 },
+            { q: '¿Qué tecnología permite crear servicios REST sobre SQL Azure?', o: ['WCF Data Services', 'ASP.NET Web API', 'OData', 'Entity Framework'], a: 0 },
+            { q: '¿Qué clase de ASP.NET se usa para enlazar datos a controles?', o: ['SqlDataSource', 'ObjectDataSource', 'EntityDataSource', 'LinqDataSource'], a: 0 },
+            { q: '¿Qué método de SqlCommand ejecuta una consulta INSERT?', o: ['ExecuteNonQuery', 'ExecuteReader', 'ExecuteScalar', 'ExecuteXmlReader'], a: 0 },
+            { q: '¿Qué se necesita para usar el controlador JDBC?', o: ['sqljdbc.jar o sqljdbc4.jar', 'mysql-connector', 'ojdbc', 'postgresql.jdbc'], a: 0 },
+            { q: '¿Qué clase de .NET se usa para conectarse a SQL Server en ADO.NET?', o: ['SqlConnection', 'OleDbConnection', 'OdbcConnection', 'DbConnection'], a: 0 },
+            { q: '¿Qué comando de Transact-SQL crea una base de datos en SQL Azure?', o: ['CREATE DATABASE', 'NEW DATABASE', 'ADD DATABASE', 'CREATE DB'], a: 0 },
+            { q: '¿Qué se debe instalar para desarrollar aplicaciones Windows Azure con Visual Studio?', o: ['Windows Azure SDK', '.NET Framework 4.5', 'SQL Server 2012', 'IIS'], a: 0 },
+            { q: '¿Qué propiedad de SqlConnection debe establecerse para evitar ataques Man-in-the-middle?', o: ['TrustServerCertificate=False', 'TrustServerCertificate=True', 'Encrypt=False', 'Authentication=Active Directory'], a: 0 },
+            { q: '¿Qué método de SqlDataReader se usa para leer datos?', o: ['Read()', 'NextResult()', 'GetString()', 'ExecuteReader()'], a: 0 },
+            { q: '¿Qué espacio de nombres contiene SqlConnection?', o: ['System.Data.SqlClient', 'System.Data.OleDb', 'System.Data.Odbc', 'Microsoft.Data.SqlClient'], a: 0 },
+            { q: '¿Qué cadena de conexión incluye el nombre de la base de datos?', o: ['Initial Catalog', 'Database', 'Catalog', 'DB'], a: 0 },
+            { q: '¿Qué parámetro de sqlcmd especifica el servidor?', o: ['-S', '-U', '-P', '-d'], a: 0 },
+            { q: '¿Qué se usa para crear un modelo de datos en Entity Framework?', o: ['ADO.NET Entity Data Model', 'DataSet', 'DataTable', 'SQL Data Model'], a: 0 }
+        ],
+        6: [
+            { q: '¿Qué tipo de datos se usa para almacenar valores jerárquicos?', o: ['hierarchyid', 'xml', 'geography', 'sql_variant'], a: 0 },
+            { q: '¿Qué función de agregado calcula la desviación estándar?', o: ['STDEV', 'STDEVP', 'VAR', 'VARP'], a: 0 },
+            { q: '¿Qué operador lógico devuelve TRUE si una subconsulta contiene filas?', o: ['EXISTS', 'IN', 'ANY', 'ALL'], a: 0 },
+            { q: '¿Qué vista del sistema muestra el uso de ancho de banda?', o: ['sys.bandwidth_usage', 'sys.database_usage', 'sys.network_usage', 'sys.usage'], a: 0 },
+            { q: '¿Qué método del tipo xml modifica el contenido XML?', o: ['modify()', 'query()', 'value()', 'nodes()'], a: 0 },
+            { q: '¿Qué función de metadatos devuelve el ID de una base de datos?', o: ['DB_ID', 'DATABASE_ID', 'DB_NAME', 'DATABASE_NAME'], a: 0 },
+            { q: '¿Qué operador compuesto suma y asigna?', o: ['+=', '-=', '*=', '/='], a: 0 },
+            { q: '¿Qué función de fecha devuelve el nombre del día?', o: ['DAYNAME', 'DATENAME', 'DAY', 'DATEADD'], a: 0 },
+            { q: '¿Qué tipo de datos se usa para coordenadas geográficas?', o: ['geography', 'geometry', 'point', 'location'], a: 0 },
+            { q: '¿Qué función de seguridad devuelve el usuario actual?', o: ['CURRENT_USER', 'USER_NAME', 'USER', 'SUSER_SNAME'], a: 0 },
+            { q: '¿Qué operador bit a bit realiza OR exclusivo?', o: ['^', '|', '&', '~'], a: 0 },
+            { q: '¿Qué función devuelve el número de filas afectadas por la última instrucción?', o: ['@@ROWCOUNT', 'ROWCOUNT_BIG', 'COUNT', 'COUNT_BIG'], a: 0 },
+            { q: '¿Qué vista de catálogo muestra las columnas de una tabla?', o: ['sys.columns', 'sys.tables', 'sys.all_columns', 'sys.column'], a: 0 },
+            { q: '¿Qué función de cadena devuelve la posición de un patrón?', o: ['PATINDEX', 'CHARINDEX', 'LOCATE', 'INSTR'], a: 0 },
+            { q: '¿Qué tipo de datos se usa para valores binarios grandes?', o: ['varbinary', 'binary', 'image', 'blob'], a: 0 },
+            { q: '¿Qué operador de comparación comprueba desigualdad?', o: ['<>', '!=', 'NOT', 'EXCEPT'], a: 0 },
+            { q: '¿Qué función de sistema devuelve el nombre de la aplicación?', o: ['APP_NAME', 'APPLICATION_NAME', 'APP_ID', 'PROGRAM_NAME'], a: 0 },
+            { q: '¿Qué vista de compatibilidad está disponible en SQL Azure?', o: ['sys.syscharsets', 'sys.sysdatabases', 'sys.sysusers', 'sys.sysreferences'], a: 0 },
+            { q: '¿Qué operador unario invierte los bits?', o: ['~', '!', '-', '+'], a: 0 },
+            { q: '¿Qué función de agregado devuelve el valor mínimo?', o: ['MIN', 'MAX', 'AVG', 'SUM'], a: 0 }
+        ],
+        7: [
+            { q: '¿Qué instrucción SET establece el nivel de aislamiento de transacciones?', o: ['SET TRANSACTION ISOLATION LEVEL', 'SET ISOLATION LEVEL', 'SET TRANSACTION', 'SET LOCK_TIMEOUT'], a: 0 },
+            { q: '¿Qué sugerencia de consulta no se admite en SQL Azure?', o: ['MAXDOP', 'NOLOCK', 'INDEX', 'HASH'], a: 0 },
+            { q: '¿Qué instrucción no es compatible con SQL Azure?', o: ['BACKUP DATABASE', 'CREATE TABLE', 'ALTER LOGIN', 'GRANT'], a: 0 },
+            { q: '¿Qué procedimiento almacenado del sistema se usa para ejecutar SQL dinámico?', o: ['sp_executesql', 'sp_dynamicsql', 'sp_sqlexec', 'sp_dynamic'], a: 0 },
+            { q: '¿Qué vista de administración dinámica muestra los planes de consulta?', o: ['sys.dm_exec_query_plan', 'sys.dm_exec_plan', 'sys.dm_query_plan', 'sys.plan'], a: 0 },
+            { q: '¿Qué error indica que la base de datos ha alcanzado su cuota de tamaño?', o: ['40544', '40501', '40197', '40613'], a: 0 },
+            { q: '¿Qué código de motivo de limitación indica "Rechazar todo"?', o: ['3', '1', '2', '0'], a: 0 },
+            { q: '¿Qué procedimiento almacenado agrega una regla de firewall?', o: ['sp_set_firewall_rule', 'sp_add_firewall', 'sp_firewall_add', 'sp_create_firewall'], a: 0 },
+            { q: '¿Qué vista muestra las sesiones activas?', o: ['sys.dm_exec_sessions', 'sys.sessions', 'sys.dm_sessions', 'sys.exec_sessions'], a: 0 },
+            { q: '¿Qué instrucción de copia de seguridad se admite en SQL Azure?', o: ['Ninguna', 'BACKUP DATABASE', 'BACKUP LOG', 'BACKUP CERTIFICATE'], a: 0 },
+            { q: '¿Qué procedimiento almacenado del catálogo muestra las columnas de una tabla?', o: ['sp_columns', 'sp_column', 'sp_helpcolumn', 'sp_table_columns'], a: 0 },
+            { q: '¿Qué opción de SET muestra el plan de ejecución?', o: ['SET SHOWPLAN_ALL', 'SET STATISTICS PROFILE', 'SET STATISTICS IO', 'SET STATISTICS TIME'], a: 0 },
+            { q: '¿Qué vista de catálogo muestra los índices de una tabla?', o: ['sys.indexes', 'sys.index_columns', 'sys.tables', 'sys.all_indexes'], a: 0 },
+            { q: '¿Qué error se produce por pérdida de conexión?', o: ['40197', '40544', '40501', '40613'], a: 0 },
+            { q: '¿Qué procedimiento almacenado del motor de base de datos devuelve ayuda sobre un objeto?', o: ['sp_help', 'sp_helpobject', 'sp_object_help', 'sp_describe'], a: 0 },
+            { q: '¿Qué instrucción DDL no se admite?', o: ['CREATE ASSEMBLY', 'CREATE TABLE', 'CREATE VIEW', 'CREATE PROCEDURE'], a: 0 },
+            { q: '¿Qué tipo de sugerencia de tabla no se admite?', o: ['PAGLOCK', 'NOLOCK', 'HOLDLOCK', 'UPDLOCK'], a: 0 },
+            { q: '¿Qué vista muestra las reglas de firewall?', o: ['sys.firewall_rules', 'sys.firewall', 'sys.dm_firewall', 'sys.rules'], a: 0 },
+            { q: '¿Qué función de seguridad devuelve el SID del servidor?', o: ['SUSER_SID', 'USER_SID', 'SERVER_SID', 'SID'], a: 0 },
+            { q: '¿Qué instrucción SET habilita el modo de solo lectura?', o: ['SET FMTONLY', 'SET NOEXEC', 'SET PARSEONLY', 'SET ROWCOUNT'], a: 0 }
+        ],
+        8: [
+            { q: '¿Qué opción de ALTER DATABASE no es compatible?', o: ['COLLATE', 'MODIFY NAME', 'EDITION', 'MAXSIZE'], a: 0 },
+            { q: '¿Qué cláusula de CREATE TABLE es obligatoria?', o: ['Tener un índice clúster', 'Tener una clave primaria', 'Tener una columna IDENTITY', 'Tener una restricción DEFAULT'], a: 0 },
+            { q: '¿Qué comando modifica un índice?', o: ['ALTER INDEX', 'MODIFY INDEX', 'UPDATE INDEX', 'CHANGE INDEX'], a: 0 },
+            { q: '¿Qué opción de CREATE INDEX no está disponible?', o: ['FILLFACTOR', 'IGNORE_DUP_KEY', 'ONLINE', 'STATISTICS_NORECOMPUTE'], a: 0 },
+            { q: '¿Qué comando cambia la contraseña de un inicio de sesión?', o: ['ALTER LOGIN', 'ALTER USER', 'CHANGE PASSWORD', 'SET PASSWORD'], a: 0 },
+            { q: '¿Qué opción de ALTER TABLE no se admite?', o: ['SWITCH PARTITION', 'ADD COLUMN', 'DROP COLUMN', 'ADD CONSTRAINT'], a: 0 },
+            { q: '¿Qué comando crea un tipo de datos definido por el usuario?', o: ['CREATE TYPE', 'CREATE UDT', 'ADD TYPE', 'DEFINE TYPE'], a: 0 },
+            { q: '¿Qué opción de CREATE TRIGGER no es compatible?', o: ['ENCRYPTION', 'FOR', 'AFTER', 'INSTEAD OF'], a: 0 },
+            { q: '¿Qué comando elimina un índice?', o: ['DROP INDEX', 'DELETE INDEX', 'REMOVE INDEX', 'DROP INDEX ON'], a: 0 },
+            { q: '¿Qué comando cambia el propietario de un objeto?', o: ['ALTER AUTHORIZATION', 'CHANGE OWNER', 'ALTER OWNER', 'SET OWNER'], a: 0 },
+            { q: '¿Qué opción de CREATE DATABASE especifica la edición?', o: ['EDITION', 'VERSION', 'TYPE', 'SKU'], a: 0 },
+            { q: '¿Qué comando modifica una función?', o: ['ALTER FUNCTION', 'MODIFY FUNCTION', 'UPDATE FUNCTION', 'CHANGE FUNCTION'], a: 0 },
+            { q: '¿Qué opción de ALTER USER permite cambiar el inicio de sesión asociado?', o: ['LOGIN', 'WITH LOGIN', 'SET LOGIN', 'CHANGE LOGIN'], a: 1 },
+            { q: '¿Qué comando crea un sinónimo?', o: ['CREATE SYNONYM', 'CREATE ALIAS', 'ADD SYNONYM', 'DEFINE SYNONYM'], a: 0 },
+            { q: '¿Qué opción de CREATE VIEW no es compatible?', o: ['ENCRYPTION', 'SCHEMABINDING', 'VIEW_METADATA', 'CHECK OPTION'], a: 0 },
+            { q: '¿Qué comando deshabilita un trigger?', o: ['DISABLE TRIGGER', 'DROP TRIGGER', 'ALTER TRIGGER ... DISABLE', 'TURN OFF TRIGGER'], a: 0 },
+            { q: '¿Qué opción de CREATE INDEX permite incluir columnas no clave?', o: ['INCLUDE', 'INCLUDES', 'EXTRA', 'ADD'], a: 0 },
+            { q: '¿Qué comando crea un índice espacial?', o: ['CREATE SPATIAL INDEX', 'CREATE SPATIAL', 'CREATE INDEX SPATIAL', 'CREATE GEO INDEX'], a: 0 },
+            { q: '¿Qué opción de ALTER DATABASE cambia el nombre?', o: ['MODIFY NAME', 'RENAME', 'CHANGE NAME', 'SET NAME'], a: 0 },
+            { q: '¿Qué comando elimina un trigger?', o: ['DROP TRIGGER', 'DELETE TRIGGER', 'REMOVE TRIGGER', 'ALTER TRIGGER ... DROP'], a: 0 }
+        ],
+        9: [
+            { q: '¿Qué instrucción INSERT no admite nombres de tres partes?', o: ['Sí, admite solo dos partes', 'No admite tres partes', 'Admite tres partes', 'Admite cuatro partes'], a: 1 },
+            { q: '¿Qué comando DCL concede permisos a nivel de base de datos?', o: ['GRANT', 'REVOKE', 'DENY', 'PERMIT'], a: 0 },
+            { q: '¿Qué tipo de entidad de seguridad no se admite en GRANT?', o: ['Application_role', 'Database_user', 'Database_role', 'User_without_login'], a: 0 },
+            { q: '¿Qué comando revoca permisos?', o: ['REVOKE', 'REMOVE', 'CANCEL', 'WITHDRAW'], a: 0 },
+            { q: '¿Qué comando deniega permisos?', o: ['DENY', 'REFUSE', 'REJECT', 'DISALLOW'], a: 0 },
+            { q: '¿Qué opción de EXECUTE AS no es compatible?', o: ['AS LOGIN', 'AS USER', 'AS SELF', 'AS OWNER'], a: 0 },
+            { q: '¿Qué comando habilita un trigger?', o: ['ENABLE TRIGGER', 'ACTIVATE TRIGGER', 'TURN ON TRIGGER', 'START TRIGGER'], a: 0 },
+            { q: '¿Qué comando USE hace en SQL Azure?', o: ['No cambia la base de datos', 'Cambia a la base de datos especificada', 'Cierra la conexión', 'Reinicia la sesión'], a: 0 },
+            { q: '¿Qué instrucción TCL inicia una transacción?', o: ['BEGIN TRANSACTION', 'START TRANSACTION', 'BEGIN TRAN', 'Todas son correctas'], a: 3 },
+            { q: '¿Qué comando DCL concede permisos sobre un tipo?', o: ['GRANT ... ON TYPE', 'GRANT TYPE', 'PERMIT TYPE', 'GRANT ON DATABASE'], a: 0 },
+            { q: '¿Qué opción de INSERT permite insertar múltiples filas?', o: ['VALUES con múltiples tuplas', 'INSERT MULTIPLE', 'INSERT ROWS', 'No se permite'], a: 0 },
+            { q: '¿Qué comando ejecuta un procedimiento almacenado?', o: ['EXECUTE', 'EXEC', 'CALL', 'RUN'], a: 0 },
+            { q: '¿Qué opción de DENY no es compatible?', o: ['CASCADE', 'TO', 'WITH GRANT OPTION', 'AS'], a: 2 },
+            { q: '¿Qué comando establece el contexto de ejecución para una sesión?', o: ['EXECUTE AS', 'SETUSER', 'IMPERSONATE', 'AS USER'], a: 0 },
+            { q: '¿Qué instrucción TCL confirma una transacción?', o: ['COMMIT TRANSACTION', 'COMMIT WORK', 'COMMIT', 'Todas son correctas'], a: 3 },
+            { q: '¿Qué comando deshabilita un trigger?', o: ['DISABLE TRIGGER', 'DROP TRIGGER', 'ALTER TRIGGER ... DISABLE', 'TURN OFF TRIGGER'], a: 0 },
+            { q: '¿Qué opción de REVOKE permite revocar la opción GRANT?', o: ['GRANT OPTION FOR', 'CASCADE', 'AS', 'TO'], a: 0 },
+            { q: '¿Qué instrucción de control de flujo se admite?', o: ['IF...ELSE', 'WHILE', 'BEGIN...END', 'Todas'], a: 3 },
+            { q: '¿Qué comando permite cambiar el esquema predeterminado de un usuario?', o: ['ALTER USER', 'ALTER SCHEMA', 'ALTER DEFAULT SCHEMA', 'CHANGE SCHEMA'], a: 0 },
+            { q: '¿Qué opción de INSERT permite insertar el resultado de una consulta?', o: ['INSERT ... SELECT', 'INSERT VALUES', 'INSERT DEFAULT', 'INSERT EXEC'], a: 0 }
+        ]
+    };
+
+    // ===== GENERAR TABS Y CONTENIDO =====
+    const tabContainer = document.getElementById('tabContainer');
+    const contentContainer = document.getElementById('contentContainer');
+
+    let tabsHtml = '';
+    let contentHtml = '';
+
+    chapters.forEach((ch, idx) => {
+        const active = idx === 0 ? 'active' : '';
+        const num = ch.id;
+        tabsHtml += `<button class="tab-btn ${active}" data-chapter="${num}">${ch.label}</button>`;
+
+        contentHtml += `<div class="chapter-content ${active}" id="chapter${num}">
+            <div class="summary">${summaries[num]}</div>
+            <div class="quiz">
+                <h3>📝 Cuestionario · ${ch.label}</h3>
+                ${renderQuiz(num)}
+            </div>
+        </div>`;
+    });
+
+    tabContainer.innerHTML = tabsHtml;
+    contentContainer.innerHTML = contentHtml;
+
+    // ===== FUNCIÓN PARA RENDERIZAR PREGUNTAS =====
+    function renderQuiz(chapterId) {
+        const questions = quizzes[chapterId];
+        if (!questions) return '<p>Cuestionario no disponible.</p>';
+        let html = '';
+        questions.forEach((q, index) => {
+            html += `<div class="question" data-q="${index}">
+                <p>${index+1}. ${q.q}</p>
+                <div class="options">
+                    ${q.o.map((opt, oi) => `
+                        <label>
+                            <input type="radio" name="q${chapterId}_${index}" value="${oi}">
+                            ${opt}
+                        </label>
+                    `).join('')}
+                </div>
+                <div class="correct-answer">✅ Respuesta correcta: ${q.o[q.a]}</div>
+            </div>`;
+        });
+        return html;
+    }
+
+    // ===== LÓGICA DE PESTAÑAS =====
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const chapter = this.dataset.chapter;
+            // Desactivar todos
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.chapter-content').forEach(c => c.classList.remove('active'));
+            // Activar
+            this.classList.add('active');
+            document.getElementById('chapter' + chapter).classList.add('active');
+        });
+    });
+
+    // ===== MOSTRAR RESPUESTAS =====
+    // Añadir botón a cada capítulo
+    document.querySelectorAll('.chapter-content').forEach((ch, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'show-answers-btn';
+        btn.textContent = '🔍 Mostrar respuestas';
+        btn.addEventListener('click', function() {
+            const container = this.closest('.chapter-content');
+            const corrects = container.querySelectorAll('.correct-answer');
+            corrects.forEach(el => {
+                el.style.display = 'block';
+            });
+        });
+        ch.appendChild(btn);
+    });
+
+    // ===== INICIALIZAR: primer capítulo activo =====
+    // Ya está hecho en el renderizado
+</script>
+</body>
+</html>

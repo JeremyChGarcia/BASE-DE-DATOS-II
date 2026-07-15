@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEMA 4 · Monitoreo Proactivo — Correo, Logs y Alertas</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/night-owl.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<style>
+  :root{
+    --bg:            #0b1220;
+    --bg-panel:      #101a2e;
+    --bg-panel-2:    #0d1626;
+    --line:          #1f2c47;
+    --text:          #dbe4f5;
+    --text-dim:      #7d8bab;
+    --amber:         #f2b544;
+    --green:         #4fd1a5;
+    --red:           #ef6a6a;
+    --blue:          #5aa9ff;
+    --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 500px at 85% -10%, rgba(90,169,255,0.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(79,209,165,0.06), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.55;
+  }
+
+  /* ---------- Top status bar (console header) ---------- */
+  .console-bar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; gap:14px;
+    padding:10px 22px;
+    background:rgba(10,16,30,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+  .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2.4s infinite; flex:none; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  .console-bar .sep{ opacity:.3; }
+  .console-bar .status-ok{ color:var(--green); }
+  .console-bar strong{ color:var(--text); font-weight:600; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:76px 22px 54px;
+    max-width:1080px; margin:0 auto;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--amber); margin:0 0 18px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--amber); }
+  h1{
+    font-family:var(--sans); font-weight:700; font-size:clamp(32px,4.6vw,52px);
+    line-height:1.08; margin:0 0 20px; letter-spacing:-0.01em;
+    color:#fff;
+  }
+  h1 .accent{ color:var(--blue); }
+  .hero p.lede{ max-width:640px; color:var(--text-dim); font-size:16.5px; margin:0 0 30px; }
+
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:10px;
+  }
+  .meta-chip{
+    font-family:var(--mono); font-size:12px; color:var(--text-dim);
+    border:1px solid var(--line); padding:6px 12px; border-radius:6px;
+    display:flex; align-items:center; gap:7px; background:var(--bg-panel-2);
+  }
+  .meta-chip .k{ color:var(--blue); }
+
+  /* ---------- Layout: sidebar nav + content ---------- */
+  .layout{
+    display:grid; grid-template-columns:250px 1fr;
+    max-width:1080px; margin:0 auto; align-items:start;
+  }
+  nav.rail{
+    position:sticky; top:49px;
+    padding:38px 18px 60px 22px;
+    align-self:start;
+    height:calc(100vh - 49px);
+    overflow-y:auto;
+  }
+  nav.rail .rail-title{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--text-dim); margin-bottom:14px;
+  }
+  nav.rail a{
+    display:flex; align-items:baseline; gap:10px;
+    text-decoration:none; color:var(--text-dim);
+    font-size:14px; padding:9px 10px; border-radius:7px;
+    border-left:2px solid transparent;
+    transition:all .15s ease;
+  }
+  nav.rail a .n{ font-family:var(--mono); font-size:11px; color:var(--text-dim); opacity:.6; }
+  nav.rail a:hover{ color:var(--text); background:var(--bg-panel-2); }
+  nav.rail a.active{ color:#fff; border-left-color:var(--blue); background:var(--bg-panel-2); }
+  nav.rail a.active .n{ color:var(--blue); opacity:1; }
+
+  main{ padding:38px 24px 100px 26px; min-width:0; }
+
+  /* ---------- Project section ---------- */
+  .project{
+    scroll-margin-top:66px;
+    padding-bottom:64px; margin-bottom:64px;
+    border-bottom:1px solid var(--line);
+  }
+  .project:last-child{ border-bottom:none; }
+
+  .project-head{
+    display:flex; align-items:flex-start; gap:18px; margin-bottom:6px;
+  }
+  .p-index{
+    font-family:var(--mono); font-size:34px; font-weight:700;
+    color:transparent; -webkit-text-stroke:1px var(--line); flex:none; line-height:1;
+    padding-top:2px;
+  }
+  .project-head h2{
+    font-size:23px; margin:0 0 6px; color:#fff; font-weight:650; letter-spacing:-.01em;
+  }
+  .project-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
+  .tag{
+    font-family:var(--mono); font-size:11px; color:var(--blue);
+    background:rgba(90,169,255,0.08); border:1px solid rgba(90,169,255,0.25);
+    padding:3px 9px; border-radius:5px;
+  }
+
+  .block{ margin-top:28px; }
+  .block-label{
+    display:flex; align-items:center; gap:9px;
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:12px;
+  }
+  .block-label .num{
+    width:19px; height:19px; border-radius:50%; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--text-dim);
+    flex:none;
+  }
+  .block-label.enunciado .num{ border-color:var(--amber); color:var(--amber); }
+  .block-label.script .num{ border-color:var(--blue); color:var(--blue); }
+  .block-label.justificacion .num{ border-color:var(--green); color:var(--green); }
+  .block-label.practicas .num{ border-color:var(--red); color:var(--red); }
+
+  .enunciado-text{
+    background:var(--bg-panel-2); border:1px solid var(--line); border-left:3px solid var(--amber);
+    padding:16px 18px; border-radius:0 8px 8px 0; color:var(--text); font-size:15px;
+  }
+  .enunciado-text ul{ margin:10px 0 0; padding-left:20px; }
+  .enunciado-text li{ margin-bottom:4px; color:var(--text-dim); }
+
+  /* code window */
+  .code-window{
+    border:1px solid var(--line); border-radius:10px; overflow:hidden;
+    background:#0d1420;
+  }
+  .code-window .titlebar{
+    display:flex; align-items:center; gap:8px;
+    padding:9px 14px; background:#101a2e; border-bottom:1px solid var(--line);
+  }
+  .code-window .titlebar .tdot{ width:9px; height:9px; border-radius:50%; }
+  .code-window .titlebar .tdot:nth-child(1){ background:#ef6a6a; }
+  .code-window .titlebar .tdot:nth-child(2){ background:#f2b544; }
+  .code-window .titlebar .tdot:nth-child(3){ background:#4fd1a5; }
+  .code-window .titlebar .fname{
+    margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-dim);
+  }
+  .code-window pre{ margin:0; padding:18px 20px; overflow-x:auto; font-size:13px; }
+  .code-window code.hljs{ background:transparent !important; font-family:var(--mono); }
+
+  .justificacion-text, .practicas-text{ color:var(--text-dim); font-size:15px; }
+  .justificacion-text strong, .practicas-text strong{ color:var(--text); font-weight:600; }
+
+  .practicas-list{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+  .practicas-list li{
+    display:flex; gap:10px; align-items:flex-start;
+    font-size:14.5px; color:var(--text-dim);
+  }
+  .practicas-list li::before{
+    content:'✓'; color:var(--green); font-family:var(--mono); font-size:13px; flex:none;
+    margin-top:2px;
+  }
+  .practicas-list li strong{ color:var(--text); }
+
+  /* Signature element: mini "monitoring panel" per project showing what it watches */
+  .watch-panel{
+    margin-top:26px; border:1px solid var(--line); border-radius:10px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    padding:16px 18px;
+  }
+  .watch-panel .wp-title{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--text-dim); margin-bottom:10px; display:flex; align-items:center; gap:8px;
+  }
+  .watch-panel .wp-title::before{ content:'▣'; color:var(--blue); }
+  .watch-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+  .watch-item{
+    font-family:var(--mono); font-size:12px; color:var(--text);
+    background:var(--bg); border:1px solid var(--line); padding:5px 10px; border-radius:6px;
+  }
+
+  footer{
+    text-align:center; padding:36px 22px 60px; color:var(--text-dim);
+    font-family:var(--mono); font-size:12px; border-top:1px solid var(--line);
+  }
+
+  @media (max-width:860px){
+    .layout{ grid-template-columns:1fr; }
+    nav.rail{ position:static; height:auto; display:flex; overflow-x:auto; gap:4px; padding:20px 20px; border-bottom:1px solid var(--line); }
+    nav.rail .rail-title{ display:none; }
+    nav.rail a{ white-space:nowrap; }
+    .p-index{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="console-bar">
+  <span class="dot"></span>
+  <span>SQLSERVER-MONITOR<span class="sep"> // </span><strong>GradosTitulos</strong></span>
+  <span class="sep">|</span>
+  <span class="status-ok">● servicio activo</span>
+  <span class="sep">|</span>
+  <span>5 proyectos documentados</span>
+</div>
+
+<div class="hero">
+  <p class="eyebrow">Tema 4 — Base de datos II</p>
+  <h1>Monitoreo Proactivo<br><span class="accent">Correo, Logs y Alertas</span></h1>
+  <p class="lede">
+    Cinco proyectos de T-SQL orientados a la observabilidad de SQL Server: trámites pendientes,
+    auditoría de errores, crecimiento de logs, rendimiento de procedimientos y un sistema integral
+    de monitoreo para la base de datos <strong style="color:var(--text)">GradosTitulos</strong>.
+  </p>
+  <div class="hero-meta">
+    <span class="meta-chip"><span class="k">motor</span> SQL Server</span>
+    <span class="meta-chip"><span class="k">lenguaje</span> T-SQL</span>
+    <span class="meta-chip"><span class="k">componentes</span> Database Mail · SQL Server Agent · DMVs</span>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="rail">
+    <div class="rail-title">Proyectos</div>
+    <a href="#proyecto-1" class="nav-link"><span class="n">01</span> Trámites pendientes</a>
+    <a href="#proyecto-2" class="nav-link"><span class="n">02</span> Auditoría de errores</a>
+    <a href="#proyecto-3" class="nav-link"><span class="n">03</span> Crecimiento del log</a>
+    <a href="#proyecto-4" class="nav-link"><span class="n">04</span> Ranking de rendimiento</a>
+    <a href="#proyecto-5" class="nav-link"><span class="n">05</span> Monitoreo integral</a>
+  </nav>
+
+  <main>
+
+    <!-- ===================== PROYECTO 1 ===================== -->
+    <section class="project" id="proyecto-1">
+      <div class="project-head">
+        <div class="p-index">01</div>
+        <div>
+          <h2>Reporte diario de trámites pendientes por correo</h2>
+          <div class="project-tags">
+            <span class="tag">COUNT</span>
+            <span class="tag">Database Mail</span>
+            <span class="tag">sp_send_dbmail</span>
+            <span class="tag">SQL Server Agent</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label enunciado"><span class="num">1</span> Enunciado del ejercicio</div>
+        <div class="enunciado-text">
+          Crear un procedimiento almacenado que consulte diariamente la cantidad de trámites pendientes
+          y envíe un correo electrónico con el resumen.
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label script"><span class="num">2</span> Script en T-SQL</div>
+        <div class="code-window">
+          <div class="titlebar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="fname">SP_ReporteTramitesPendientes.sql</span></div>
+          <pre><code class="language-sql">CREATE OR ALTER PROCEDURE Tramite.SP_ReporteTramitesPendientes
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Cantidad INT;
+    DECLARE @Asunto   NVARCHAR(200);
+    DECLARE @Cuerpo   NVARCHAR(MAX);
+    DECLARE @Fecha    VARCHAR(20) = CONVERT(VARCHAR(20), GETDATE(), 103);
+
+    BEGIN TRY
+        SELECT @Cantidad = COUNT(*)
+        FROM Tramite.Tramite
+        WHERE Estado = 'Pendiente';
+
+        SET @Asunto = CONCAT(N'Reporte diario de trámites pendientes - ', @Fecha);
+
+        SET @Cuerpo = CONCAT(
+            N'Buenos días,', CHAR(13)+CHAR(10), CHAR(13)+CHAR(10),
+            N'Al día de hoy (', @Fecha, N') existen ', @Cantidad,
+            N' trámite(s) pendiente(s) de atención.', CHAR(13)+CHAR(10), CHAR(13)+CHAR(10),
+            N'Este es un mensaje generado automáticamente por el sistema de monitoreo.'
+        );
+
+        EXEC msdb.dbo.sp_send_dbmail
+            @profile_name = 'PerfilMonitoreo',
+            @recipients   = 'supervision@empresa.com',
+            @subject      = @Asunto,
+            @body         = @Cuerpo,
+            @body_format  = 'TEXT';
+    END TRY
+    BEGIN CATCH
+        -- El fallo del envío no debe interrumpir el proceso de monitoreo
+        PRINT CONCAT('Error al enviar el reporte: ', ERROR_MESSAGE());
+    END CATCH
+END;
+GO
+
+-- Programación en SQL Server Agent (ejecución diaria a las 07:00 a.m.)
+EXEC msdb.dbo.sp_add_job @job_name = N'Job_ReporteTramitesPendientes';
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = N'Job_ReporteTramitesPendientes',
+    @step_name = N'Ejecutar reporte',
+    @subsystem = N'TSQL',
+    @command = N'EXEC Tramite.SP_ReporteTramitesPendientes;',
+    @database_name = N'GradosTitulos';
+EXEC msdb.dbo.sp_add_schedule
+    @schedule_name = N'DiarioMañana',
+    @freq_type = 4,            -- diario
+    @freq_interval = 1,
+    @active_start_time = 070000;
+EXEC msdb.dbo.sp_attach_schedule
+    @job_name = N'Job_ReporteTramitesPendientes',
+    @schedule_name = N'DiarioMañana';
+EXEC msdb.dbo.sp_add_jobserver
+    @job_name = N'Job_ReporteTramitesPendientes';
+GO</code></pre>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label justificacion"><span class="num">3</span> Justificación técnica</div>
+        <p class="justificacion-text">
+          <strong>COUNT(*)</strong> resuelve la agregación directamente en el motor, evitando traer
+          filas al cliente solo para contarlas. El procedimiento se encapsula para poder invocarse tanto
+          manualmente como desde un job de <strong>SQL Server Agent</strong>, separando la lógica de negocio
+          (consulta) de la lógica de notificación (correo). <strong>sp_send_dbmail</strong> se ejecuta contra
+          <strong>msdb</strong>, que es donde reside Database Mail, y utiliza un perfil de correo previamente
+          configurado en lugar de credenciales SMTP embebidas en el script. <strong>CREATE OR ALTER</strong>
+          hace el despliegue idempotente: el mismo script puede volver a ejecutarse sin necesidad de un DROP previo.
+        </p>
+      </div>
+
+      <div class="block">
+        <div class="block-label practicas"><span class="num">4</span> Buenas prácticas aplicadas</div>
+        <ul class="practicas-list">
+          <li><strong>SET NOCOUNT ON</strong> para evitar mensajes de conteo de filas innecesarios en la salida.</li>
+          <li>Separación de responsabilidades: un job de Agent programa la ejecución; el procedimiento solo contiene lógica.</li>
+          <li>Manejo defensivo del envío de correo con TRY/CATCH, para que un fallo de Database Mail no interrumpa el job.</li>
+          <li>Uso de <strong>CONCAT</strong> con literales Unicode (N'...') para evitar problemas de codificación en tildes y ñ.</li>
+          <li>Nombres de perfil y destinatarios como configuración, no como valores hardcodeados dispersos en el código.</li>
+        </ul>
+      </div>
+
+      <div class="watch-panel">
+        <div class="wp-title">Qué observa este proyecto</div>
+        <div class="watch-grid">
+          <span class="watch-item">Tramite.Tramite → Estado = 'Pendiente'</span>
+          <span class="watch-item">Frecuencia: diaria 07:00 a.m.</span>
+          <span class="watch-item">Canal de salida: correo (Database Mail)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROYECTO 2 ===================== -->
+    <section class="project" id="proyecto-2">
+      <div class="project-head">
+        <div class="p-index">02</div>
+        <div>
+          <h2>Auditoría automática de errores en SP_RegistrarTramite</h2>
+          <div class="project-tags">
+            <span class="tag">TRY / CATCH</span>
+            <span class="tag">ERROR_MESSAGE()</span>
+            <span class="tag">ERROR_NUMBER()</span>
+            <span class="tag">ERROR_LINE()</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label enunciado"><span class="num">1</span> Enunciado del ejercicio</div>
+        <div class="enunciado-text">
+          Registrar automáticamente en una tabla de auditoría todos los errores producidos durante la
+          ejecución del procedimiento <code>Tramite.SP_RegistrarTramite</code>.
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label script"><span class="num">2</span> Script en T-SQL</div>
+        <div class="code-window">
+          <div class="titlebar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="fname">Auditoria_SP_RegistrarTramite.sql</span></div>
+          <pre><code class="language-sql">-- Tabla de auditoría de errores
+CREATE TABLE Tramite.AuditoriaErrores
+(
+    IdError        INT IDENTITY(1,1)  PRIMARY KEY,
+    NombreProceso  NVARCHAR(128)      NOT NULL,
+    NumeroError    INT                NOT NULL,
+    MensajeError   NVARCHAR(2048)     NOT NULL,
+    LineaError     INT                NULL,
+    Severidad      INT                NULL,
+    Estado         INT                NULL,
+    UsuarioBD      NVARCHAR(128)      NOT NULL DEFAULT SUSER_SNAME(),
+    FechaError     DATETIME2          NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+CREATE OR ALTER PROCEDURE Tramite.SP_RegistrarTramite
+    @IdSolicitante INT,
+    @TipoTramite   VARCHAR(50),
+    @Descripcion   NVARCHAR(500)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        INSERT INTO Tramite.Tramite (IdSolicitante, TipoTramite, Descripcion, Estado, FechaRegistro)
+        VALUES (@IdSolicitante, @TipoTramite, @Descripcion, 'Pendiente', GETDATE());
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0
+            ROLLBACK TRANSACTION;
+
+        INSERT INTO Tramite.AuditoriaErrores
+            (NombreProceso, NumeroError, MensajeError, LineaError, Severidad, Estado)
+        VALUES
+            (N'Tramite.SP_RegistrarTramite', ERROR_NUMBER(), ERROR_MESSAGE(),
+             ERROR_LINE(), ERROR_SEVERITY(), ERROR_STATE());
+
+        THROW; -- se conserva el error original para la capa que invocó el SP
+    END CATCH
+END;
+GO</code></pre>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label justificacion"><span class="num">3</span> Justificación técnica</div>
+        <p class="justificacion-text">
+          El bloque <strong>TRY/CATCH</strong> aísla la operación de inserción de negocio de su manejo de
+          fallos. Antes de hacer <strong>ROLLBACK</strong> se valida <strong>XACT_STATE()</strong>, porque
+          si la transacción quedó en estado "no confirmable" (-1) un ROLLBACK directo sin esa verificación
+          puede generar un error adicional. Las funciones <strong>ERROR_NUMBER()</strong>,
+          <strong>ERROR_MESSAGE()</strong>, <strong>ERROR_LINE()</strong>, <strong>ERROR_SEVERITY()</strong> y
+          <strong>ERROR_STATE()</strong> solo son válidas dentro del CATCH y capturan el diagnóstico completo
+          del error tal como lo vio el motor. Finalmente, <strong>THROW</strong> relanza el error original
+          hacia la aplicación cliente después de auditarlo, en vez de "tragárselo" silenciosamente.
+        </p>
+      </div>
+
+      <div class="block">
+        <div class="block-label practicas"><span class="num">4</span> Explicación de las buenas prácticas utilizadas</div>
+        <ul class="practicas-list">
+          <li>Verificación de <strong>XACT_STATE()</strong> antes de cualquier ROLLBACK.</li>
+          <li>Uso de <strong>THROW</strong> en vez de RAISERROR, ya que preserva número, severidad y línea originales del error.</li>
+          <li><strong>DATETIME2</strong> y <strong>SUSER_SNAME()</strong> por defecto en la tabla de auditoría, para trazabilidad temporal y de usuario sin depender de que el SP los provea.</li>
+          <li>El error nunca se pierde: se audita y además se propaga, cumpliendo doble función (registro + notificación al llamador).</li>
+          <li>Transacción explícita y acotada solo a la operación de escritura, minimizando el tiempo de bloqueo.</li>
+        </ul>
+      </div>
+
+      <div class="watch-panel">
+        <div class="wp-title">Qué observa este proyecto</div>
+        <div class="watch-grid">
+          <span class="watch-item">Tramite.SP_RegistrarTramite</span>
+          <span class="watch-item">Errores de inserción / validación</span>
+          <span class="watch-item">Destino: Tramite.AuditoriaErrores</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROYECTO 3 ===================== -->
+    <section class="project" id="proyecto-3">
+      <div class="project-head">
+        <div class="p-index">03</div>
+        <div>
+          <h2>Monitoreo del crecimiento del archivo de log</h2>
+          <div class="project-tags">
+            <span class="tag">sys.database_files</span>
+            <span class="tag">sys.dm_db_log_space_usage</span>
+            <span class="tag">SQL Server Agent</span>
+            <span class="tag">Database Mail</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label enunciado"><span class="num">1</span> Enunciado del ejercicio</div>
+        <div class="enunciado-text">
+          Diseñar un sistema que monitoree el crecimiento del archivo de log de la base de datos y genere
+          una alerta cuando supere el 80&nbsp;% del tamaño configurado.
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label script"><span class="num">2</span> Script en T-SQL</div>
+        <div class="code-window">
+          <div class="titlebar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="fname">SP_MonitorearCrecimientoLog.sql</span></div>
+          <pre><code class="language-sql">CREATE OR ALTER PROCEDURE dbo.SP_MonitorearCrecimientoLog
+    @UmbralPorcentaje DECIMAL(5,2) = 80.0
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NombreBD      SYSNAME = DB_NAME();
+    DECLARE @PorcentajeUso DECIMAL(5,2);
+    DECLARE @TamanioMB     DECIMAL(18,2);
+    DECLARE @UsoMB         DECIMAL(18,2);
+    DECLARE @Asunto        NVARCHAR(200);
+    DECLARE @Cuerpo        NVARCHAR(MAX);
+
+    SELECT
+        @PorcentajeUso = used_log_space_in_percent,
+        @UsoMB         = used_log_space_in_bytes / 1048576.0
+    FROM sys.dm_db_log_space_usage;
+
+    SELECT @TamanioMB = size * 8.0 / 1024
+    FROM sys.database_files
+    WHERE type_desc = 'LOG';
+
+    IF @PorcentajeUso >= @UmbralPorcentaje
+    BEGIN
+        SET @Asunto = CONCAT(N'ALERTA: Log de ', @NombreBD, N' al ', @PorcentajeUso, N'%');
+        SET @Cuerpo = CONCAT(
+            N'El archivo de log de la base de datos ', @NombreBD,
+            N' ha alcanzado ', @PorcentajeUso, N'% de uso.', CHAR(13)+CHAR(10),
+            N'Tamaño total del log: ', @TamanioMB, N' MB.', CHAR(13)+CHAR(10),
+            N'Espacio actualmente usado: ', @UsoMB, N' MB.'
+        );
+
+        EXEC msdb.dbo.sp_send_dbmail
+            @profile_name = 'PerfilMonitoreo',
+            @recipients   = 'dba@empresa.com',
+            @subject      = @Asunto,
+            @body         = @Cuerpo,
+            @body_format  = 'TEXT';
+    END;
+END;
+GO
+
+-- Job de Agent: revisión cada 15 minutos
+EXEC msdb.dbo.sp_add_job @job_name = N'Job_MonitoreoLog';
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = N'Job_MonitoreoLog',
+    @step_name = N'Revisar crecimiento del log',
+    @subsystem = N'TSQL',
+    @command = N'EXEC dbo.SP_MonitorearCrecimientoLog;',
+    @database_name = N'GradosTitulos';
+EXEC msdb.dbo.sp_add_schedule
+    @schedule_name = N'Cada15Min',
+    @freq_type = 4,
+    @freq_subday_type = 4,
+    @freq_subday_interval = 15;
+EXEC msdb.dbo.sp_attach_schedule @job_name = N'Job_MonitoreoLog', @schedule_name = N'Cada15Min';
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_MonitoreoLog';
+GO</code></pre>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label justificacion"><span class="num">3</span> Justificación técnica</div>
+        <p class="justificacion-text">
+          <strong>sys.dm_db_log_space_usage</strong> expone el porcentaje de uso del log directamente
+          desde el motor, sin necesidad de escanear el archivo físico, y es la vista recomendada frente a
+          la sentencia heredada DBCC SQLPERF(LOGSPACE). <strong>sys.database_files</strong> aporta el tamaño
+          físico configurado en páginas (que se convierte a MB multiplicando por 8/1024). El umbral se
+          parametriza en lugar de codificarse fijo, y la alerta solo se dispara condicionalmente
+          (<strong>IF @PorcentajeUso &gt;= @UmbralPorcentaje</strong>), evitando saturar la bandeja de
+          correo con notificaciones en cada ejecución del job.
+        </p>
+      </div>
+
+      <div class="block">
+        <div class="block-label practicas"><span class="num">4</span> Explicación de las buenas prácticas utilizadas</div>
+        <ul class="practicas-list">
+          <li>Uso de <strong>DMVs</strong> en vez de comandos DBCC heredados para obtener métricas en tiempo real.</li>
+          <li>Umbral configurable como parámetro del procedimiento, no como valor fijo dentro de la lógica.</li>
+          <li>Envío de alerta condicional, para que el correo sea una excepción y no una constante.</li>
+          <li>Frecuencia de revisión corta (15 min) frente al informe diario, acorde a la criticidad de quedarse sin espacio en el log.</li>
+          <li>Separación entre "tamaño configurado" y "espacio usado", permitiendo diagnosticar tanto crecimiento como falta de mantenimiento (backups de log).</li>
+        </ul>
+      </div>
+
+      <div class="watch-panel">
+        <div class="wp-title">Qué observa este proyecto</div>
+        <div class="watch-grid">
+          <span class="watch-item">% uso del log ≥ 80%</span>
+          <span class="watch-item">Frecuencia: cada 15 min</span>
+          <span class="watch-item">Canal de salida: correo (Database Mail)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROYECTO 4 ===================== -->
+    <section class="project" id="proyecto-4">
+      <div class="project-head">
+        <div class="p-index">04</div>
+        <div>
+          <h2>Ranking de rendimiento de procedimientos almacenados</h2>
+          <div class="project-tags">
+            <span class="tag">Tablas de monitoreo</span>
+            <span class="tag">DMV</span>
+            <span class="tag">Procedimientos</span>
+            <span class="tag">Consultas de rendimiento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label enunciado"><span class="num">1</span> Enunciado del ejercicio</div>
+        <div class="enunciado-text">
+          Implementar un sistema que registre automáticamente el tiempo de ejecución de los procedimientos
+          almacenados principales de la base de datos y genere un ranking de rendimiento.
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label script"><span class="num">2</span> Script en T-SQL</div>
+        <div class="code-window">
+          <div class="titlebar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="fname">Ranking_Rendimiento_SP.sql</span></div>
+          <pre><code class="language-sql">-- Tabla histórica de rendimiento
+CREATE TABLE dbo.MonitoreoRendimientoSP
+(
+    Id              BIGINT IDENTITY(1,1) PRIMARY KEY,
+    NombreSP        NVARCHAR(256)  NOT NULL,
+    FechaEjecucion  DATETIME2      NOT NULL DEFAULT SYSDATETIME(),
+    DuracionMs      BIGINT         NOT NULL,
+    LecturasLogicas BIGINT         NULL,
+    TiempoCPUMs     BIGINT         NULL
+);
+GO
+
+-- Snapshot periódico desde la DMV de estadísticas de procedimientos
+CREATE OR ALTER PROCEDURE dbo.SP_RegistrarRendimiento
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.MonitoreoRendimientoSP (NombreSP, DuracionMs, LecturasLogicas, TiempoCPUMs)
+    SELECT
+        OBJECT_SCHEMA_NAME(ps.object_id, ps.database_id) + '.' + OBJECT_NAME(ps.object_id, ps.database_id),
+        ps.total_elapsed_time / 1000,
+        ps.total_logical_reads,
+        ps.total_worker_time / 1000
+    FROM sys.dm_exec_procedure_stats ps
+    WHERE ps.database_id = DB_ID();
+END;
+GO
+
+-- Ranking de rendimiento sobre los últimos 7 días
+CREATE OR ALTER PROCEDURE dbo.SP_RankingRendimiento
+    @TopN INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (@TopN)
+        NombreSP,
+        AVG(DuracionMs)  AS PromedioDuracionMs,
+        MAX(DuracionMs)  AS MaximoDuracionMs,
+        COUNT(*)         AS Muestras
+    FROM dbo.MonitoreoRendimientoSP
+    WHERE FechaEjecucion >= DATEADD(DAY, -7, SYSDATETIME())
+    GROUP BY NombreSP
+    ORDER BY PromedioDuracionMs DESC;
+END;
+GO
+
+-- Job de Agent: snapshot cada hora
+EXEC msdb.dbo.sp_add_job @job_name = N'Job_SnapshotRendimiento';
+EXEC msdb.dbo.sp_add_jobstep
+    @job_name = N'Job_SnapshotRendimiento',
+    @step_name = N'Registrar rendimiento',
+    @subsystem = N'TSQL',
+    @command = N'EXEC dbo.SP_RegistrarRendimiento;',
+    @database_name = N'GradosTitulos';
+EXEC msdb.dbo.sp_add_schedule
+    @schedule_name = N'CadaHora',
+    @freq_type = 4,
+    @freq_subday_type = 8,
+    @freq_subday_interval = 1;
+EXEC msdb.dbo.sp_attach_schedule @job_name = N'Job_SnapshotRendimiento', @schedule_name = N'CadaHora';
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_SnapshotRendimiento';
+GO</code></pre>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label justificacion"><span class="num">3</span> Justificación técnica</div>
+        <p class="justificacion-text">
+          <strong>sys.dm_exec_procedure_stats</strong> acumula, por procedimiento, el tiempo transcurrido,
+          las lecturas lógicas y el tiempo de CPU desde la última recompilación o reinicio del servicio,
+          sin necesidad de instrumentar manualmente cada SP existente. Como esta DMV se reinicia con
+          recompilaciones o un restart del servicio, se toma un <strong>snapshot periódico</strong> hacia
+          una tabla histórica propia, lo que permite conservar tendencias en el tiempo. El ranking agrega
+          por procedimiento sobre una ventana móvil de 7 días usando <strong>AVG</strong> y
+          <strong>MAX</strong>, dando visibilidad tanto del comportamiento típico como del peor caso.
+        </p>
+      </div>
+
+      <div class="block">
+        <div class="block-label practicas"><span class="num">4</span> Explicación de las buenas prácticas utilizadas</div>
+        <ul class="practicas-list">
+          <li>Monitoreo <strong>no intrusivo</strong>: no se modifica el código de los procedimientos monitoreados.</li>
+          <li>Separación entre captura (<strong>SP_RegistrarRendimiento</strong>) y consulta/reporte (<strong>SP_RankingRendimiento</strong>).</li>
+          <li>Ventana móvil de 7 días en el ranking en vez de un histórico acumulado completo, para reflejar el rendimiento reciente.</li>
+          <li>Parámetro <strong>@TopN</strong> configurable en el ranking, evitando resultados fijos o excesivos.</li>
+          <li>Filtro por <strong>DB_ID()</strong> para evitar mezclar estadísticas de procedimientos de otras bases del mismo servidor.</li>
+        </ul>
+      </div>
+
+      <div class="watch-panel">
+        <div class="wp-title">Qué observa este proyecto</div>
+        <div class="watch-grid">
+          <span class="watch-item">Duración, lecturas y CPU por SP</span>
+          <span class="watch-item">Frecuencia: snapshot cada hora</span>
+          <span class="watch-item">Salida: ranking Top-N (7 días)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROYECTO 5 ===================== -->
+    <section class="project" id="proyecto-5">
+      <div class="project-head">
+        <div class="p-index">05</div>
+        <div>
+          <h2>Sistema integral de monitoreo — base de datos GradosTitulos</h2>
+          <div class="project-tags">
+            <span class="tag">Bloqueos</span>
+            <span class="tag">Consultas lentas</span>
+            <span class="tag">Sesiones con alto CPU</span>
+            <span class="tag">Tablas históricas</span>
+            <span class="tag">Alertas por correo</span>
+            <span class="tag">Informe diario</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label enunciado"><span class="num">1</span> Enunciado del ejercicio</div>
+        <div class="enunciado-text">
+          Desarrollar un sistema integral de monitoreo para la base de datos <strong>GradosTitulos</strong> que realice automáticamente:
+          <ul>
+            <li>Monitoreo de bloqueos (blocking)</li>
+            <li>Detección de consultas lentas</li>
+            <li>Identificación de sesiones con alto consumo de CPU</li>
+            <li>Registro de eventos en tablas históricas</li>
+            <li>Envío de alertas por correo cuando se superen umbrales establecidos</li>
+            <li>Generación diaria de un informe consolidado del estado del servidor</li>
+          </ul>
+          El script integra Transact-SQL, SQL Server Agent, Dynamic Management Views (DMV), Database Mail
+          (sp_send_dbmail), TRY...CATCH, transacciones, tablas de auditoría e historial, y procedimientos
+          almacenados para automatizar el monitoreo y la generación de reportes.
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label script"><span class="num">2</span> Script en T-SQL</div>
+        <div class="code-window">
+          <div class="titlebar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="fname">Monitoreo_Integral_GradosTitulos.sql</span></div>
+          <pre><code class="language-sql">USE GradosTitulos;
+GO
+
+/* ============ 1. TABLAS HISTÓRICAS ============ */
+
+CREATE TABLE dbo.MonitoreoBloqueos
+(
+    Id                  BIGINT IDENTITY(1,1) PRIMARY KEY,
+    FechaDeteccion      DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    SesionBloqueada     INT NOT NULL,
+    SesionBloqueadora   INT NOT NULL,
+    ConsultaBloqueada   NVARCHAR(MAX) NULL,
+    EsperaMs            BIGINT NULL
+);
+GO
+
+CREATE TABLE dbo.MonitoreoConsultasLentas
+(
+    Id              BIGINT IDENTITY(1,1) PRIMARY KEY,
+    FechaDeteccion  DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    TextoConsulta   NVARCHAR(MAX) NULL,
+    DuracionMs      BIGINT NOT NULL,
+    LecturasLogicas BIGINT NULL,
+    SesionId        INT NULL
+);
+GO
+
+CREATE TABLE dbo.MonitoreoSesionesCPU
+(
+    Id              BIGINT IDENTITY(1,1) PRIMARY KEY,
+    FechaDeteccion  DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    SesionId        INT NOT NULL,
+    LoginName       NVARCHAR(128) NULL,
+    CPUTimeMs       BIGINT NULL,
+    ProgramName     NVARCHAR(256) NULL
+);
+GO
+
+CREATE TABLE dbo.LogEventosMonitoreo
+(
+    Id           BIGINT IDENTITY(1,1) PRIMARY KEY,
+    Fecha        DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    Proceso      NVARCHAR(128) NOT NULL,
+    Mensaje      NVARCHAR(MAX) NOT NULL,
+    Severidad    VARCHAR(20) NOT NULL DEFAULT 'INFO'
+);
+GO
+
+/* ============ 2. DETECCIÓN DE BLOQUEOS ============ */
+
+CREATE OR ALTER PROCEDURE dbo.SP_DetectarBloqueos
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        INSERT INTO dbo.MonitoreoBloqueos (SesionBloqueada, SesionBloqueadora, ConsultaBloqueada, EsperaMs)
+        SELECT
+            r.session_id,
+            r.blocking_session_id,
+            st.text,
+            r.wait_time
+        FROM sys.dm_exec_requests r
+        CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) st
+        WHERE r.blocking_session_id <> 0;
+    END TRY
+    BEGIN CATCH
+        INSERT INTO dbo.LogEventosMonitoreo (Proceso, Mensaje, Severidad)
+        VALUES ('SP_DetectarBloqueos', ERROR_MESSAGE(), 'ERROR');
+    END CATCH
+END;
+GO
+
+/* ============ 3. DETECCIÓN DE CONSULTAS LENTAS ============ */
+
+CREATE OR ALTER PROCEDURE dbo.SP_DetectarConsultasLentas
+    @UmbralMs INT = 5000
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        INSERT INTO dbo.MonitoreoConsultasLentas (TextoConsulta, DuracionMs, LecturasLogicas, SesionId)
+        SELECT
+            st.text,
+            r.total_elapsed_time,
+            r.logical_reads,
+            r.session_id
+        FROM sys.dm_exec_requests r
+        CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) st
+        WHERE r.total_elapsed_time >= @UmbralMs
+          AND r.session_id <> @@SPID;
+    END TRY
+    BEGIN CATCH
+        INSERT INTO dbo.LogEventosMonitoreo (Proceso, Mensaje, Severidad)
+        VALUES ('SP_DetectarConsultasLentas', ERROR_MESSAGE(), 'ERROR');
+    END CATCH
+END;
+GO
+
+/* ============ 4. SESIONES CON ALTO CONSUMO DE CPU ============ */
+
+CREATE OR ALTER PROCEDURE dbo.SP_DetectarSesionesAltoCPU
+    @UmbralCPUMs INT = 10000
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        INSERT INTO dbo.MonitoreoSesionesCPU (SesionId, LoginName, CPUTimeMs, ProgramName)
+        SELECT
+            session_id,
+            login_name,
+            cpu_time,
+            program_name
+        FROM sys.dm_exec_sessions
+        WHERE cpu_time >= @UmbralCPUMs
+          AND is_user_process = 1;
+    END TRY
+    BEGIN CATCH
+        INSERT INTO dbo.LogEventosMonitoreo (Proceso, Mensaje, Severidad)
+        VALUES ('SP_DetectarSesionesAltoCPU', ERROR_MESSAGE(), 'ERROR');
+    END CATCH
+END;
+GO
+
+/* ============ 5. ALERTAS POR CORREO (umbral superado) ============ */
+
+CREATE OR ALTER PROCEDURE dbo.SP_EnviarAlertasCriticas
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Cuerpo    NVARCHAR(MAX);
+    DECLARE @Bloqueos  INT, @Lentas INT, @CPU INT;
+
+    SELECT @Bloqueos = COUNT(*) FROM dbo.MonitoreoBloqueos        WHERE FechaDeteccion >= DATEADD(MINUTE,-15,SYSDATETIME());
+    SELECT @Lentas   = COUNT(*) FROM dbo.MonitoreoConsultasLentas WHERE FechaDeteccion >= DATEADD(MINUTE,-15,SYSDATETIME());
+    SELECT @CPU      = COUNT(*) FROM dbo.MonitoreoSesionesCPU     WHERE FechaDeteccion >= DATEADD(MINUTE,-15,SYSDATETIME());
+
+    IF @Bloqueos > 0 OR @Lentas > 0 OR @CPU > 0
+    BEGIN
+        SET @Cuerpo = CONCAT(
+            N'Resumen de incidencias (últimos 15 min):', CHAR(13)+CHAR(10),
+            N'- Bloqueos: ', @Bloqueos, CHAR(13)+CHAR(10),
+            N'- Consultas lentas: ', @Lentas, CHAR(13)+CHAR(10),
+            N'- Sesiones con alto CPU: ', @CPU
+        );
+
+        BEGIN TRY
+            EXEC msdb.dbo.sp_send_dbmail
+                @profile_name = 'PerfilMonitoreo',
+                @recipients   = 'dba@empresa.com',
+                @subject      = N'Alerta de monitoreo - GradosTitulos',
+                @body         = @Cuerpo,
+                @body_format  = 'TEXT';
+        END TRY
+        BEGIN CATCH
+            INSERT INTO dbo.LogEventosMonitoreo (Proceso, Mensaje, Severidad)
+            VALUES ('SP_EnviarAlertasCriticas', ERROR_MESSAGE(), 'ERROR');
+        END CATCH
+    END;
+END;
+GO
+
+/* ============ 6. INFORME DIARIO CONSOLIDADO ============ */
+
+CREATE OR ALTER PROCEDURE dbo.SP_InformeDiarioConsolidado
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @Cuerpo NVARCHAR(MAX);
+
+    SELECT @Cuerpo = CONCAT(
+        N'Informe diario de monitoreo - ', CONVERT(VARCHAR(20), GETDATE(), 103), CHAR(13)+CHAR(10), CHAR(13)+CHAR(10),
+        N'Bloqueos detectados: ',   (SELECT COUNT(*) FROM dbo.MonitoreoBloqueos        WHERE CAST(FechaDeteccion AS DATE) = CAST(GETDATE() AS DATE)), CHAR(13)+CHAR(10),
+        N'Consultas lentas: ',      (SELECT COUNT(*) FROM dbo.MonitoreoConsultasLentas WHERE CAST(FechaDeteccion AS DATE) = CAST(GETDATE() AS DATE)), CHAR(13)+CHAR(10),
+        N'Sesiones con alto CPU: ', (SELECT COUNT(*) FROM dbo.MonitoreoSesionesCPU     WHERE CAST(FechaDeteccion AS DATE) = CAST(GETDATE() AS DATE)), CHAR(13)+CHAR(10),
+        N'Errores del propio sistema de monitoreo: ', (SELECT COUNT(*) FROM dbo.LogEventosMonitoreo WHERE Severidad = 'ERROR' AND CAST(Fecha AS DATE) = CAST(GETDATE() AS DATE))
+    );
+
+    BEGIN TRY
+        EXEC msdb.dbo.sp_send_dbmail
+            @profile_name = 'PerfilMonitoreo',
+            @recipients   = 'dba@empresa.com',
+            @subject      = N'Informe diario - GradosTitulos',
+            @body         = @Cuerpo,
+            @body_format  = 'TEXT';
+    END TRY
+    BEGIN CATCH
+        INSERT INTO dbo.LogEventosMonitoreo (Proceso, Mensaje, Severidad)
+        VALUES ('SP_InformeDiarioConsolidado', ERROR_MESSAGE(), 'ERROR');
+    END CATCH
+END;
+GO
+
+/* ============ 7. PROGRAMACIÓN EN SQL SERVER AGENT ============ */
+
+-- Detección de incidencias cada 5 minutos
+EXEC msdb.dbo.sp_add_job @job_name = N'Job_MonitoreoIntegral_Deteccion';
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'Job_MonitoreoIntegral_Deteccion', @step_name = N'Bloqueos',
+    @subsystem = N'TSQL', @command = N'EXEC dbo.SP_DetectarBloqueos;', @database_name = N'GradosTitulos', @on_success_action = 3;
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'Job_MonitoreoIntegral_Deteccion', @step_name = N'ConsultasLentas',
+    @subsystem = N'TSQL', @command = N'EXEC dbo.SP_DetectarConsultasLentas;', @database_name = N'GradosTitulos', @on_success_action = 3;
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'Job_MonitoreoIntegral_Deteccion', @step_name = N'SesionesCPU',
+    @subsystem = N'TSQL', @command = N'EXEC dbo.SP_DetectarSesionesAltoCPU;', @database_name = N'GradosTitulos', @on_success_action = 3;
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'Job_MonitoreoIntegral_Deteccion', @step_name = N'AlertasCriticas',
+    @subsystem = N'TSQL', @command = N'EXEC dbo.SP_EnviarAlertasCriticas;', @database_name = N'GradosTitulos';
+EXEC msdb.dbo.sp_add_schedule @schedule_name = N'Cada5Min', @freq_type = 4, @freq_subday_type = 4, @freq_subday_interval = 5;
+EXEC msdb.dbo.sp_attach_schedule @job_name = N'Job_MonitoreoIntegral_Deteccion', @schedule_name = N'Cada5Min';
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_MonitoreoIntegral_Deteccion';
+GO
+
+-- Informe consolidado diario a las 06:30 a.m.
+EXEC msdb.dbo.sp_add_job @job_name = N'Job_InformeDiario';
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'Job_InformeDiario', @step_name = N'Generar informe',
+    @subsystem = N'TSQL', @command = N'EXEC dbo.SP_InformeDiarioConsolidado;', @database_name = N'GradosTitulos';
+EXEC msdb.dbo.sp_add_schedule @schedule_name = N'DiarioMadrugada', @freq_type = 4, @freq_interval = 1, @active_start_time = 063000;
+EXEC msdb.dbo.sp_attach_schedule @job_name = N'Job_InformeDiario', @schedule_name = N'DiarioMadrugada';
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_InformeDiario';
+GO</code></pre>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label justificacion"><span class="num">3</span> Justificación técnica</div>
+        <p class="justificacion-text">
+          El sistema combina varias <strong>DMVs</strong> complementarias: <strong>sys.dm_exec_requests</strong>
+          expone tanto bloqueos (vía <strong>blocking_session_id</strong>) como duración de ejecución en
+          curso, <strong>sys.dm_exec_sql_text</strong> resuelve el texto real de la consulta a partir del
+          <strong>sql_handle</strong>, y <strong>sys.dm_exec_sessions</strong> aporta el consumo acumulado de
+          CPU por sesión. Cada tipo de incidencia se persiste en su propia tabla histórica, lo que permite
+          análisis forense posterior y evita perder información cuando las DMVs se reinician. Las alertas se
+          separan de la detección: la detección corre cada 5 minutos y solo dispara correo si hay incidencias
+          en los últimos 15 minutos, mientras que el informe diario agrega el panorama completo del día
+          anterior. Cada paso del job de detección continúa aunque uno falle
+          (<strong>on_success_action = 3</strong>: ir al siguiente paso), evitando que un fallo puntual
+          detenga todo el pipeline de monitoreo.
+        </p>
+      </div>
+
+      <div class="block">
+        <div class="block-label practicas"><span class="num">4</span> Explicación de las buenas prácticas utilizadas</div>
+        <ul class="practicas-list">
+          <li><strong>Separación de responsabilidades</strong>: detección, alertamiento y reporte son procedimientos independientes que pueden programarse con frecuencias distintas.</li>
+          <li>Todo procedimiento de detección envuelve su lógica en <strong>TRY/CATCH</strong> y registra sus propios fallos en <strong>LogEventosMonitoreo</strong>, de modo que el sistema de monitoreo audita también sus propios errores.</li>
+          <li>Umbrales configurables como parámetros (<strong>@UmbralMs</strong>, <strong>@UmbralCPUMs</strong>) en lugar de valores fijos en el cuerpo del procedimiento.</li>
+          <li>Uso de <strong>CROSS APPLY</strong> con <strong>sys.dm_exec_sql_text</strong> para obtener el texto de la consulta de forma eficiente, sin necesidad de habilitar trazas adicionales.</li>
+          <li>Ventanas de tiempo acotadas (15 minutos para alertas, día calendario para el informe) para que cada consulta sea liviana y no escanee el histórico completo.</li>
+          <li>Jobs de Agent independientes por función, permitiendo ajustar la frecuencia de cada uno sin afectar a los demás.</li>
+        </ul>
+      </div>
+
+      <div class="watch-panel">
+        <div class="wp-title">Qué observa este proyecto</div>
+        <div class="watch-grid">
+          <span class="watch-item">Bloqueos activos</span>
+          <span class="watch-item">Consultas ≥ umbral de duración</span>
+          <span class="watch-item">Sesiones con CPU ≥ umbral</span>
+          <span class="watch-item">Frecuencia detección: 5 min</span>
+          <span class="watch-item">Frecuencia informe: diaria 06:30</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  TEMA 4 · Monitoreo Proactivo (Correo, Logs y Alertas) — Documento técnico generado para el proyecto de Base de Datos II
+</footer>
+
+<script>
+  hljs.highlightAll();
+
+  // Resaltado de la sección activa en el menú lateral al hacer scroll
+  const sections = document.querySelectorAll('.project');
+  const links = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = entry.target.getAttribute('id');
+      const link = document.querySelector(`.nav-link[href="#${id}"]`);
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
+
+  sections.forEach(sec => observer.observe(sec));
+</script>
+
+</body>
+</html>
